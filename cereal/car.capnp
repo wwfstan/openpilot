@@ -343,7 +343,9 @@ struct CarControl {
       chimeVision @12;
       chimeDistracted @13;
       chimeCalibration1 @14;
-      chimeCalibration2 @15;      
+      chimeCalibration2 @15;
+      chimeEngage2 @16;
+      chimeDisengage2 @17;
     }
   }
 }
