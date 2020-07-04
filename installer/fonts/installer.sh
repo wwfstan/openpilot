@@ -69,3 +69,15 @@ fi
 
 setprop persist.sys.locale $lang
 setprop persist.sys.local $lang
+
+echo =================================================================
+echo kor nanumgothic font install complete !
+echo =================================================================
+echo boot logo change to comma logo
+echo = use superuser
+echo su
+echo = eon by op3t
+echo dd if=/data/openpilot/installer/fonts/logo.bin of=/dev/block/bootdevice/by-name/LOGO
+echo = eon by lepro3
+echo dd if=/data/openpilot/installer/fonts/splash.img of=/dev/block/bootdevice/by-name/splash
+echo =================================================================
