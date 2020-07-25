@@ -376,7 +376,7 @@ void handle_message(UIState *s, SubMaster &sm) {
     scene.thermal = sm["thermal"].getThermal();
     auto data = sm["thermal"].getThermal();
     s->scene.cpu0Temp = scene.thermal.getCpu0();
-    #snprintf(scene.ipAddr, sizeof(scene.ipAddr), "%s", data.getIpAddr().cStr());
+    //snprintf(scene.ipAddr, sizeof(scene.ipAddr), "%s", data.getIpAddr().cStr());
     scene.IpAddr = data.getIpAddr();
   }
   if (sm.updated("ubloxGnss")) {
