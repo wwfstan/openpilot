@@ -17,22 +17,22 @@ int hyundai_mdps_bus = 0;
 bool hyundai_LCAN_on_bus1 = false;
 bool hyundai_forward_bus1 = false;
 const CanMsg HYUNDAI_TX_MSGS[] = {
-  {832, 0, 8}, {832, 1, 8},                 // LKAS11 Bus 0, 1
-  {1265, 0, 4}, {1265, 1, 4}, {1265, 2, 4}, // CLU11 Bus 0, 1, 2
-  {1157, 0, 4},                             // LFAHDA_MFC Bus 0
   {593, 2, 8},                              // MDPS12, Bus 2
-  {1056, 0, 8},                             // SCC11,  Bus 0
-  {1057, 0, 8},                             // SCC12,  Bus 0
-  {1290, 0, 8},                             // SCC13,  Bus 0
-  {905, 0, 8},                              // SCC14,  Bus 0
-  {1186, 0, 8},                             // 4a2SCC, Bus 0
   {790, 1, 8},                              // EMS11, Bus 1
+  {832, 0, 8}, {832, 1, 8},                 // LKAS11 Bus 0, 1
+  {905, 0, 8},                              // SCC14,  Bus 0
   {912, 0, 7}, {912,1, 7},                  // SPAS11, Bus 0, 1
+  {1056, 0, 8},                             // SCC11,  Bus 0
+  {1057, 0, 8},                             // SCC12,  Bus 0  
+  {1157, 0, 4},                             // LFAHDA_MFC Bus 0
+  {1186, 0, 8},                             // FRT_RADAR11, Bus 0
+  {1265, 0, 4}, {1265, 1, 4}, {1265, 2, 4}, // CLU11 Bus 0, 1, 2
   {1268, 0, 8}, {1268,1, 8},                // SPAS12, Bus 0, 1
+  {1290, 0, 8},                             // SCC13,  Bus 0  
  };
 
-// TODO: missing checksum for wheel speeds message,worst failure case is
-//       wheel speeds stuck at 0 and we don't disengage on brake press
+// TODO: missing checksum for wheel speeds message, worst failure case is wheel speeds stuck at 0 and we don't disengage on brake press
+
 AddrCheckStruct hyundai_rx_checks[] = {
 //  {.msg = {{608, 0, 8, .check_checksum = true, .max_counter = 3U, .expected_timestep = 10000U}}}, // EMS16
 //  {.msg = {{902, 0, 8, .max_counter = 0U,  .expected_timestep = 10000U}}}, // WHL_SPD11_0.7.6
