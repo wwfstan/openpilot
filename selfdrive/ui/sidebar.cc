@@ -43,11 +43,13 @@ static void ui_draw_sidebar_ip_addr(UIState *s) {
   const int network_ip_x = !s->scene.uilayout_sidebarcollapsed ? 54 : -(sbr_w); 
   const int network_ip_y = 255;
 
-  nvgFillColor(s->vg, COLOR_WHITE);
+  char network_ip_str[15];
+  snprintf(network_ip_str, sizeof(network_ip_str), "%s", s->scene.ipAddr);
+  nvgFillColor(s->vg, COLOR_GREEN);
   nvgFontSize(s->vg, 26);
   nvgFontFaceId(s->vg, s->font_sans_bold);
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-  nvgTextBox(s->vg, network_ip_x, network_ip_y, network_ip_w, s->scene.IpAddr.c_str(), NULL);
+  nvgTextBox(s->vg, network_ip_x, network_ip_y, network_ip_w, network_ip_str, NULL);
 }
 
 static void ui_draw_sidebar_battery_text(UIState *s) {
