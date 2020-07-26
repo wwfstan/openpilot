@@ -869,6 +869,24 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     bb_ry = bb_y + bb_h;
   }
 
+  //add steerratio liveParameters
+  if (true) {
+    char val_str[16];
+    char uom_str[6];
+    NVGcolor val_color = COLOR_WHITE_ALPHA(200);
+    if (scene->controls_state.getEnabled()) {
+      snprintf(val_str, sizeof(val_str), "%.2f",(scene->liveParams.getSteerRatio());
+    } else {
+       snprintf(val_str, sizeof(val_str), "-");
+    }
+      snprintf(uom_str, sizeof(uom_str), "");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "Steerratio",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+  
   //finally draw the frame
   bb_h += 20;
   nvgBeginPath(s->vg);
@@ -888,6 +906,7 @@ static void bb_ui_draw_UI(UIState *s)
 
   bb_ui_draw_measures_right(s, bb_dmr_x, bb_dmr_y-20, bb_dmr_w);
 }
+
 //BB END: functions added for the display of various items
 
 static void ui_draw_vision_footer(UIState *s) {
