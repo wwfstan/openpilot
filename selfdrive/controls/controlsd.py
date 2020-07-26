@@ -201,8 +201,7 @@ class Controls:
       self.events.add(EventName.canError)
     if self.mismatch_counter >= 200:
       self.events.add(EventName.controlsMismatch)
-    if not self.sm.alive['plan'] and self.sm.alive['pathPlan']:
-      # only plan not being received: radar not communicating
+    if not self.sm.alive['plan'] and self.sm.alive['pathPlan']: # only plan not being received: radar not communicating
       self.events.add(EventName.radarCommIssue)
     elif not self.sm.all_alive_and_valid():
       self.events.add(EventName.commIssue)
@@ -218,9 +217,8 @@ class Controls:
       self.events.add(EventName.vehicleModelInvalid)
     if not self.sm['liveLocationKalman'].posenetOK:
       self.events.add(EventName.posenetInvalid)
-    if not self.sm['frame'].recoverState < 2:
-      # counter>=2 is active
-      self.events.add(EventName.focusRecoverActive)
+#    if not self.sm['frame'].recoverState < 2: # counter>=2 is active
+#      self.events.add(EventName.focusRecoverActive)
     if not self.sm['plan'].radarValid:
       self.events.add(EventName.radarFault)
     if self.sm['plan'].radarCanError:
@@ -229,8 +227,8 @@ class Controls:
       self.events.add(EventName.relayMalfunction)
     if self.sm['plan'].fcw:
       self.events.add(EventName.fcw)
-    if self.sm['model'].frameDropPerc > 1:
-      self.events.add(EventName.modeldLagging)
+#    if self.sm['model'].frameDropPerc > 1:
+#      self.events.add(EventName.modeldLagging)
 
     # Only allow engagement with brake pressed when stopped behind another stopped car
 #    if CS.brakePressed and self.sm['plan'].vTargetFuture >= STARTING_TARGET_SPEED \
