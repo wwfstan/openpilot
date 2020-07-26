@@ -34,21 +34,19 @@ const CanMsg HYUNDAI_TX_MSGS[] = {
 // TODO: missing checksum for wheel speeds message, worst failure case is wheel speeds stuck at 0 and we don't disengage on brake press
 
 AddrCheckStruct hyundai_rx_checks[] = {
-//  {.msg = {{608, 0, 8, .check_checksum = true, .max_counter = 3U, .expected_timestep = 10000U}}}, // EMS16
-//  {.msg = {{902, 0, 8, .max_counter = 0U,  .expected_timestep = 10000U}}}, // WHL_SPD11_0.7.6
-//  {.msg = {{902, 0, 8, .check_checksum = false, .max_counter = 15U, .expected_timestep = 10000U}}}, // WHL_SPD11
-//  {.msg = {{916, 0, 8, .check_checksum = false, .max_counter = 0U, .expected_timestep = 10000U}}}, // TCS13_0.7.6
-//  {.msg = {{916, 0, 8, .check_checksum = true, .max_counter = 7U, .expected_timestep = 10000U}}}, // TCS13
+  {.msg = {{608, 0, 8, .check_checksum = true, .max_counter = 3U, .expected_timestep = 10000U}}}, // EMS16
+  {.msg = {{902, 0, 8, .check_checksum = false, .max_counter = 15U, .expected_timestep = 20000U}}}, // WHL_SPD11
+  {.msg = {{916, 0, 8, .check_checksum = true, .max_counter = 7U, .expected_timestep = 20000U}}}, // TCS13
   {.msg = {{1057, 0, 8, .check_checksum = true, .max_counter = 15U, .expected_timestep = 20000U}}}, // SCC12
 };
 const int HYUNDAI_RX_CHECK_LEN = sizeof(hyundai_rx_checks) / sizeof(hyundai_rx_checks[0]);
 
 // older hyundai models have less checks due to missing counters and checksums
 AddrCheckStruct hyundai_legacy_rx_checks[] = {
-//  {.msg = {{608, 0, 8, .check_checksum = true, .max_counter = 3U, .expected_timestep = 10000U}, // EMS16
-//           {881, 0, 8, .expected_timestep = 10000U}}}, // E_EMS11
-//  {.msg = {{902, 0, 8, .expected_timestep = 10000U}}}, // WHL_SPD11
-//  {.msg = {{916, 0, 8, .expected_timestep = 10000U}}}, // TCS13
+  {.msg = {{608, 0, 8, .check_checksum = true, .max_counter = 3U, .expected_timestep = 10000U}, // EMS16
+           {881, 0, 8, .expected_timestep = 10000U}}}, // E_EMS11
+  {.msg = {{902, 0, 8, .expected_timestep = 20000U}}}, // WHL_SPD11
+  {.msg = {{916, 0, 8, .expected_timestep = 20000U}}}, // TCS13
   {.msg = {{1057, 0, 8, .check_checksum = true, .max_counter = 15U, .expected_timestep = 20000U}}}, // SCC12
 };
 const int HYUNDAI_LEGACY_RX_CHECK_LEN = sizeof(hyundai_legacy_rx_checks) / sizeof(hyundai_legacy_rx_checks[0]);
