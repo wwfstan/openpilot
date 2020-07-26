@@ -742,10 +742,10 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     NVGcolor val_color = COLOR_GREEN_ALPHA(200);
       //show Orange if more than 70°C
       //show red if more than 80°C
-      if((int)(scene->cpu0Temp) > 69) {
+      if((int)((scene->cpu0Temp)/10) > 69) {
         val_color = COLOR_ORANGE_ALPHA(200);
       }
-      if((int)(scene->cpu0Temp) > 79) {
+      if((int)((scene->cpu0Temp)/10) > 79) {
         val_color = COLOR_RED_ALPHA(200);
       }
     snprintf(val_str, sizeof(val_str), "%.0f°C", (round((s->scene.cpu0Temp)/10)));
@@ -875,7 +875,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if (scene->controls_state.getEnabled()) {
-      snprintf(val_str, sizeof(val_str), "%.2f",(scene->liveParams.getSteerRatio());
+      snprintf(val_str, sizeof(val_str), "%.2f",(scene->liveParams.getSteerRatio);
     } else {
        snprintf(val_str, sizeof(val_str), "-");
     }
