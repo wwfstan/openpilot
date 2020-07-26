@@ -136,6 +136,7 @@ typedef struct UIScene {
   cereal::ControlsState::AlertSize alert_size;
   // ui add
   float angleSteers;
+  float steerRatio;
   bool brakeLights;
   float angleSteersDes;
   bool steerOverride;
