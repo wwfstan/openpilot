@@ -168,7 +168,7 @@ static void ui_init(UIState *s) {
 
   pthread_mutex_init(&s->lock, NULL);
   s->sm = new SubMaster({"model", "controlsState", "uiLayoutState", "liveCalibration", "radarState", "thermal",
-                         "health", "ubloxGnss", "driverState", "dMonitoringState", "carState", "liveMpc"
+                         "health", "ubloxGnss", "driverState", "dMonitoringState", "carState", "liveMpc", "liveParameters"
 #ifdef SHOW_SPEEDLIMIT
                                     , "liveMapData"
 #endif
@@ -334,6 +334,11 @@ void handle_message(UIState *s, SubMaster &sm) {
       }
     }
   }
+
+  if (sm.updated("liveParameters")) {
+    scene.liveParams = sm["liveParameters"].getLiveParameters();
+  }
+  
   if (sm.updated("radarState")) {
     auto data = sm["radarState"].getRadarState();
     scene.lead_data[0] = data.getLeadOne();
