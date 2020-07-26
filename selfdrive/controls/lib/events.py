@@ -237,7 +237,7 @@ EVENTS = {
       "화이트 판다는 호환되지않습니다",
       "comma two 또는 블랙판다로 업그레이드하세요",
       AlertStatus.userPrompt, AlertSize.mid,
-      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 15.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 5.),
   },
 
   EventName.startupMaster: {
@@ -245,7 +245,7 @@ EVENTS = {
       "오픈파일럿 사용준비 완료",
       "항상 핸들을 잡고 도로를 주시하세요",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOWER, VisualAlert.none, AudibleAlert.none, 0., 0., 5.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.chimeEngage2, 1., 0., 5.),
   },
 
   EventName.startupNoControl: {
@@ -343,7 +343,7 @@ EVENTS = {
 
   EventName.gasPressed: {
     ET.PRE_ENABLE: Alert(
-      "악셀패달사용시 오픈파일럿은 브레이크를 사용하지않습니다",
+      "가속패달사용시 오픈파일럿은 브레이크를 사용하지않습니다",
       "",
       AlertStatus.normal, AlertSize.small,
       Priority.LOWEST, VisualAlert.none, AudibleAlert.none, .0, .0, .1),
@@ -683,8 +683,8 @@ EVENTS = {
   },
 
   EventName.modeldLagging: {
-    ET.SOFT_DISABLE: SoftDisableAlert("주행 모델 지연됨"),
-    ET.NO_ENTRY : NoEntryAlert("주행 모델 지연됨"),
+    ET.SOFT_DISABLE: SoftDisableAlert("주행모델 지연됨"),
+    ET.NO_ENTRY : NoEntryAlert("주행모델 지연됨"),
   },
 
   EventName.lowMemory: {
@@ -738,8 +738,8 @@ EVENTS = {
   },
 
   EventName.gasUnavailable: {
-    ET.IMMEDIATE_DISABLE: ImmediateDisableAlert("Gas 에러 : 차량을 재가동하세요"),
-    ET.NO_ENTRY: NoEntryAlert("Gas 에러 : 차량을 재가동하세요"),
+    ET.IMMEDIATE_DISABLE: ImmediateDisableAlert("가속패달 에러 : 차량을 재가동하세요"),
+    ET.NO_ENTRY: NoEntryAlert("가속패달 에러 : 차량을 재가동하세요"),
   },
 
   EventName.reverseGear: {
