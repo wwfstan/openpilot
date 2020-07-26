@@ -338,7 +338,7 @@ void handle_message(UIState *s, SubMaster &sm) {
   if (sm.updated("liveParameters")) {
     //scene.liveParams = sm["liveParameters"].getLiveParameters();
     auto data = sm["liveParameters"].getLiveParameters();    
-    s->scene.SteerRatio=data.getSteerRatio();
+    s->scene.steerRatio=data.getSteerRatio();
   }
   
   if (sm.updated("radarState")) {
