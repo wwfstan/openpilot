@@ -238,19 +238,6 @@ static void ui_draw_track(UIState *s, bool is_mpc, track_vertices_data *pvd) {
       COLOR_WHITE_ALPHA(200), COLOR_WHITE_ALPHA(50));
   }
 
-  /* THIS IS THE STANDARD MPC -wirelessnet2
-  if (is_mpc) {
-    // Draw colored MPC track
-    const uint8_t *clr = bg_colors[s->status];
-    track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-      nvgRGBA(clr[0], clr[1], clr[2], 255), nvgRGBA(clr[0], clr[1], clr[2], 255/2));
-  } else {
-    // Draw white vision track
-    track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-      COLOR_WHITE, COLOR_WHITE_ALPHA(0));
-  }
-  */
-
   nvgFillPaint(s->vg, track_bg);
   nvgFill(s->vg);
 }
@@ -880,7 +867,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
        snprintf(val_str, sizeof(val_str), "-");
     }
       snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "Steerratio",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "SteerRatio",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
