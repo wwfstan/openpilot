@@ -572,7 +572,7 @@ static void ui_draw_vision_event(UIState *s) {
 #ifdef SHOW_SPEEDLIMIT
 static void ui_draw_vision_map(UIState *s) {
   const int map_size = 96;
-  const int map_x = (s->scene.ui_viz_rx + (map_size * 3) + (bdr_is * 3));
+  const int map_x = (s->scene.ui_viz_rx + (map_size * 5) + (bdr_is * 3));
   const int map_y = (footer_y + ((footer_h - map_size) / 2));
   ui_draw_circle_image(s->vg, map_x, map_y+border_shifter+25, map_size-5, s->img_map, s->scene.map_valid);
 }
@@ -644,7 +644,7 @@ static void ui_draw_driver_view(UIState *s) {
 static void ui_draw_vision_brake(UIState *s) { //We should probably refactor this to use ui_draw_circle_image() -wirelessnet2
   const UIScene *scene = &s->scene;
   const int brake_size = 85; //made the Brake Icon a bit smaller -wirelessnet2
-  const int brake_x = (scene->ui_viz_rx + (brake_size * 5) + (bdr_is * 2.5)); //Moved brake icon a bit closer to DM icon -wirelessnet2
+  const int brake_x = (scene->ui_viz_rx + (brake_size * 3) + (bdr_is * 2.5)); //Moved brake icon a bit closer to DM icon -wirelessnet2
   const int brake_y = (footer_y + ((footer_h - brake_size) / 2));
   const int brake_img_size = (brake_size * 1.5);
   const int brake_img_x = (brake_x - (brake_img_size / 2));
@@ -731,7 +731,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   int bb_h = 5;
   NVGcolor lab_color = COLOR_WHITE_ALPHA(200);
   NVGcolor uom_color = COLOR_WHITE_ALPHA(200);
-  int value_fontSize=30;
+  int value_fontSize=28;
   int label_fontSize=15;
   int uom_fontSize = 15;
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
