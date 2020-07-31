@@ -293,7 +293,7 @@ void handle_message(UIState *s, SubMaster &sm) {
     scene.angleSteers = scene.controls_state.getAngleSteers();
     scene.angleSteersDes = scene.controls_state.getAngleSteersDes();
     
-    scene.steerOverride= scene.controls_state.getSteerOverride();
+    scene.steerOverride = scene.controls_state.getSteerOverride();
     scene.output_scale = scene.controls_state.getLateralControlState().getPidState().getOutput();
     
     auto alert_sound = scene.controls_state.getAlertSound();
@@ -338,7 +338,7 @@ void handle_message(UIState *s, SubMaster &sm) {
 
   if (sm.updated("liveParameters")) {
     auto data = sm["liveParameters"].getLiveParameters();    
-    scene.steerRatio=data.getSteerRatio();
+    scene.steerRatio = data.getSteerRatio();
   }
   
   if (sm.updated("radarState")) {
