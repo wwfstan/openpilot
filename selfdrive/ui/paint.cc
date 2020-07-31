@@ -221,11 +221,11 @@ static void ui_draw_track(UIState *s, bool is_mpc, track_vertices_data *pvd) {
   NVGpaint track_bg;
   if (is_mpc) {
     // Draw colored MPC track Kegman's
-    if (scene.steerOverride) {
+    if (scene->steerOverride) {
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
         nvgRGBA(0, 191, 255, 255), nvgRGBA(0, 95, 128, 50));
     } else {
-      int torque_scale = (int)fabs(510*(float)scene.output_scale);
+      int torque_scale = (int)fabs(510*(float)scene->output_scale);
       int red_lvl = fmin(255, torque_scale);
       int green_lvl = fmin(255, 510-torque_scale);
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
@@ -735,7 +735,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
       if((int)((scene->maxCpuTemp)/10) > 79) {
         val_color = COLOR_RED_ALPHA(200);
       }
-    snprintf(val_str, sizeof(val_str), "%.0f°C", (round((scene.maxCpuTemp)/10)));
+    snprintf(val_str, sizeof(val_str), "%.0f°C", (round((scene->maxCpuTemp)/10)));
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "CPU 온도",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
@@ -862,7 +862,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if (scene->controls_state.getEnabled()) {
-      snprintf(val_str, sizeof(val_str), "%.2f",(scene.steerRatio));
+      snprintf(val_str, sizeof(val_str), "%.2f",(scene->steerRatio));
     } else {
        snprintf(val_str, sizeof(val_str), "-");
     }
