@@ -221,11 +221,11 @@ static void ui_draw_track(UIState *s, bool is_mpc, track_vertices_data *pvd) {
   NVGpaint track_bg;
   if (is_mpc) {
     // Draw colored MPC track Kegman's
-    if (s->scene.steerOverride) {
+    if (scene.steerOverride) {
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
         nvgRGBA(0, 191, 255, 255), nvgRGBA(0, 95, 128, 50));
     } else {
-      int torque_scale = (int)fabs(510*(float)s->scene.output_scale);
+      int torque_scale = (int)fabs(510*(float)scene.output_scale);
       int red_lvl = fmin(255, torque_scale);
       int green_lvl = fmin(255, 510-torque_scale);
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
@@ -729,13 +729,13 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     NVGcolor val_color = COLOR_GREEN_ALPHA(200);
       //show Orange if more than 70°C
       //show red if more than 80°C
-      if((int)((scene->cpu0Temp)/10) > 69) {
+      if((int)((scene->maxCpuTemp)/10) > 69) {
         val_color = COLOR_ORANGE_ALPHA(200);
       }
-      if((int)((scene->cpu0Temp)/10) > 79) {
+      if((int)((scene->maxCpuTemp)/10) > 79) {
         val_color = COLOR_RED_ALPHA(200);
       }
-    snprintf(val_str, sizeof(val_str), "%.0f°C", (round((s->scene.cpu0Temp)/10)));
+    snprintf(val_str, sizeof(val_str), "%.0f°C", (round((scene.maxCpuTemp)/10)));
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "CPU 온도",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
@@ -748,17 +748,17 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     char val_str[16];
     char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
-    if (s->scene.lead_status) {
+    if (scene->lead_data[0].getStatus()) {
       //show RED if less than 5 meters
       //show orange if less than 15 meters
-      if((int)(s->scene.lead_d_rel) < 15) {
+      if((int)(scene->lead_data[0].getDRel()) < 15) {
         val_color = COLOR_ORANGE_ALPHA(200);
       }
-      if((int)(s->scene.lead_d_rel) < 5) {
+      if((int)(scene->lead_data[0].getDRel()) < 5) {
         val_color = COLOR_RED_ALPHA(200);
       }
       // lead car relative distance is always in meters
-      snprintf(val_str, sizeof(val_str), "%d", (int)s->scene.lead_d_rel);
+      snprintf(val_str, sizeof(val_str), "%d", (int)scene->lead_data[0].getDRel());
     } else {
        snprintf(val_str, sizeof(val_str), "-");
     }
@@ -775,20 +775,20 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     char val_str[16];
     char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
-    if (s->scene.lead_status) {
+    if (scene->lead_data[0].getStatus()) {
       //show Orange if negative speed (approaching)
       //show Orange if negative speed faster than 5mph (approaching fast)
-      if((int)(s->scene.lead_v_rel) < 0) {
+      if((int)(scene->lead_data[0].getVRel()) < 0) {
         val_color = COLOR_ORANGE_ALPHA(200);
       }
-      if((int)(s->scene.lead_v_rel) < -5) {
+      if((int)(scene->lead_data[0].getVRel()) < -5) {
         val_color = COLOR_RED_ALPHA(200);
       }
       // lead car relative speed is always in meters
       if (s->is_metric) {
-         snprintf(val_str, sizeof(val_str), "%d", (int)(s->scene.lead_v_rel * 3.6 + 0.5));
+         snprintf(val_str, sizeof(val_str), "%d", (int)(scene->lead_data[0].getVRel() * 3.6 + 0.5));
       } else {
-         snprintf(val_str, sizeof(val_str), "%d", (int)(s->scene.lead_v_rel * 2.2374144 + 0.5));
+         snprintf(val_str, sizeof(val_str), "%d", (int)(scene->lead_data[0].getVRel() * 2.2374144 + 0.5));
       }
     } else {
        snprintf(val_str, sizeof(val_str), "-");
@@ -812,14 +812,14 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     NVGcolor val_color = COLOR_GREEN_ALPHA(200);
       //show Orange if more than 30 degrees
       //show red if  more than 50 degrees
-      if(((int)(s->scene.angleSteers) < -30) || ((int)(scene->angleSteers) > 30)) {
+      if(((int)(scene.angleSteers) < -30) || ((int)(scene->angleSteers) > 30)) {
         val_color = COLOR_ORANGE_ALPHA(200);
       }
-      if(((int)(s->scene.angleSteers) < -50) || ((int)(scene->angleSteers) > 50)) {
+      if(((int)(scene.angleSteers) < -50) || ((int)(scene->angleSteers) > 50)) {
         val_color = COLOR_RED_ALPHA(200);
       }
       // steering is in degrees
-      snprintf(val_str, sizeof(val_str), "%.1f°",(s->scene.angleSteers));
+      snprintf(val_str, sizeof(val_str), "%.1f°",(scene.angleSteers));
 
       snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "핸들 조향각",
@@ -837,14 +837,14 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     if (scene->controls_state.getEnabled()) {
       //show Orange if more than 30 degrees
       //show red if  more than 50 degrees
-      if(((int)(s->scene.angleSteersDes) < -30) || ((int)(scene->angleSteersDes) > 30)) {
+      if(((int)(scene.angleSteersDes) < -30) || ((int)(scene->angleSteersDes) > 30)) {
         val_color = COLOR_WHITE_ALPHA(200);
       }
-      if(((int)(s->scene.angleSteersDes) < -50) || ((int)(scene->angleSteersDes) > 50)) {
+      if(((int)(scene.angleSteersDes) < -50) || ((int)(scene->angleSteersDes) > 50)) {
         val_color = COLOR_WHITE_ALPHA(200);
       }
       // steering is in degrees
-      snprintf(val_str, sizeof(val_str), "%.1f°",(s->scene.angleSteersDes));
+      snprintf(val_str, sizeof(val_str), "%.1f°",(scene.angleSteersDes));
     } else {
        snprintf(val_str, sizeof(val_str), "-");
     }
@@ -862,7 +862,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     char uom_str[6];
     NVGcolor val_color = COLOR_WHITE_ALPHA(200);
     if (scene->controls_state.getEnabled()) {
-      snprintf(val_str, sizeof(val_str), "%.2f",(s->scene.steerRatio));
+      snprintf(val_str, sizeof(val_str), "%.2f",(scene.steerRatio));
     } else {
        snprintf(val_str, sizeof(val_str), "-");
     }
