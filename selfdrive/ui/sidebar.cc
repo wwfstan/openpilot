@@ -73,7 +73,7 @@ static void ui_draw_sidebar_network_type(UIState *s) {
   
   nvgFillColor(s->vg, COLOR_GREEN);
   nvgFontSize(s->vg, 30);
-  nvgTextBox(s->vg, network_x-20, network_y + 55, 250, s->scene.thermal.getWifiIpAddress().cStr(), NULL);
+  nvgTextBox(s->vg, network_x-20, network_y + 55, 250, s->scene.thermal.getipAddr().cStr(), NULL);
 }
 
 static void ui_draw_sidebar_metric(UIState *s, const char* label_str, const char* value_str, const int severity, const int y_offset, const char* message_str) {
