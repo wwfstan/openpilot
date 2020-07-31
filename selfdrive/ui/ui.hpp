@@ -141,12 +141,10 @@ typedef struct UIScene {
   float angleSteersDes;
   bool steerOverride;
   float output_scale; 
-  float cpu0Temp;
+  float maxCpuTemp;
   int batteryPercent;
   bool batteryCharging;
   char batteryStatus[64];
-  // ip addr
-  char ipAddr[20];
   
   // Used to show gps planner status
   bool gps_planner_active;
@@ -175,7 +173,6 @@ typedef struct {
   vertex_data v[TRACK_POINTS_MAX_CNT];
   int cnt;
 } track_vertices_data;
-
 
 typedef struct UIState {
   pthread_mutex_t lock;
