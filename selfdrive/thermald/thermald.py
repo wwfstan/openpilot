@@ -20,10 +20,6 @@ from selfdrive.pandad import get_expected_signature
 from selfdrive.thermald.power_monitoring import PowerMonitoring, get_battery_capacity, get_battery_status, \
                                                 get_battery_current, get_battery_voltage, get_usb_present
 
-import subprocess
-import re
-import time
-
 FW_SIGNATURE = get_expected_signature()
 
 ThermalStatus = log.ThermalData.ThermalStatus
@@ -178,6 +174,7 @@ def thermald_thread():
 
   network_type = NetworkType.none
   network_strength = NetworkStrength.unknown
+  ipAddr = '연결안됨'
 
   current_filter = FirstOrderFilter(0., CURRENT_TAU, DT_TRML)
   cpu_temp_filter = FirstOrderFilter(0., CPU_TEMP_TAU, DT_TRML)
@@ -194,10 +191,6 @@ def thermald_thread():
   pm = PowerMonitoring()
   no_panda_cnt = 0
 
-  # ip addr
-  ts_last_ip = None
-  ip_addr = '255.255.255.255'
-  
   while 1:
     ts = sec_since_boot()
     health = messaging.recv_sock(health_sock, wait=True)
@@ -244,6 +237,7 @@ def thermald_thread():
       try:
         network_type = get_network_type()
         network_strength = get_network_strength(network_type)
+        ipAddr = get_ip_address()
       except Exception:
         cloudlog.exception("Error getting network status")
 
@@ -252,6 +246,7 @@ def thermald_thread():
     msg.thermal.cpuPerc = int(round(psutil.cpu_percent()))
     msg.thermal.networkType = network_type
     msg.thermal.networkStrength = network_strength
+    msg.thermal.wifiIpAddress = IpAddr
     msg.thermal.batteryPercent = get_battery_capacity()
     msg.thermal.batteryStatus = get_battery_status()
     msg.thermal.batteryCurrent = get_battery_current()
@@ -262,17 +257,6 @@ def thermald_thread():
     if is_uno:
       msg.thermal.batteryPercent = 100
       msg.thermal.batteryStatus = "Charging"
-
-    # update ip every 10 seconds
-    ts = sec_since_boot()
-    if ts_last_ip is None or ts - ts_last_ip >= 10.:
-      try:
-        result = subprocess.check_output(["ifconfig", "wlan0"], encoding='utf8')  # pylint: disable=unexpected-keyword-arg
-        ip_addr = re.findall(r"inet addr:((\d+\.){3}\d+)", result)[0][0]
-      except:
-        ip_addr = 'N/A'
-      ts_last_ip = ts
-    msg.thermal.ipAddr = ip_addr     
       
     current_filter.update(msg.thermal.batteryCurrent / 1e6)
 
