@@ -121,12 +121,6 @@ typedef struct UIScene {
   int ui_viz_rx;
   int ui_viz_rw;
   int ui_viz_ro;
-  
-  int lead_status;
-  float lead_d_rel, lead_y_rel, lead_v_rel;
-
-  int lead_status2;
-  float lead_d_rel2, lead_y_rel2, lead_v_rel2;
 
   int front_box_x, front_box_y, front_box_width, front_box_height;
 
@@ -134,18 +128,16 @@ typedef struct UIScene {
   std::string alert_text2;
   std::string alert_type;
   cereal::ControlsState::AlertSize alert_size;
+  
   // ui add
+  float maxCpuTemp;
   float angleSteers;
-  float steerRatio;
-  bool brakeLights;
   float angleSteersDes;
   bool steerOverride;
   float output_scale; 
-  float maxCpuTemp;
-  int batteryPercent;
-  bool batteryCharging;
-  char batteryStatus[64];
-  
+  float steerRatio;
+  bool brakeLights;  
+    
   // Used to show gps planner status
   bool gps_planner_active;
 
