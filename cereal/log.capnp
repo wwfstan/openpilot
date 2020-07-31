@@ -286,6 +286,7 @@ struct ThermalData {
   networkType @22 :NetworkType;
   offroadPowerUsage @23 :UInt32;  # Power usage since going offroad in uWh
   networkStrength @24 :NetworkStrength;
+  wifiIpAddress @25 :Text;
 
   fanSpeed @10 :UInt16;
   started @11 :Bool;
@@ -298,8 +299,6 @@ struct ThermalData {
   memUsedPercent @19 :Int8;
   cpuPerc @20 :Int8;
   
-  ipAddr @25 :Text;
-
   enum ThermalStatus {
     green @0;   # all processes run
     yellow @1;  # critical processes run (kill uploader), engage still allowed
