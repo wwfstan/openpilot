@@ -81,3 +81,7 @@ echo dd if=/data/openpilot/installer/fonts/logo.bin of=/dev/block/bootdevice/by-
 echo = eon by lepro3
 echo dd if=/data/openpilot/installer/fonts/splash.img of=/dev/block/bootdevice/by-name/splash
 echo =================================================================
+echo = bootanimation
+echo mount -o rw,remount /system
+echo cp ./bootanimation /system/media/
+echo =================================================================
