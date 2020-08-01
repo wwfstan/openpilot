@@ -37,10 +37,10 @@ def create_lkas11(packer, frame, car_fingerprint, apply_steer, steer_req,
     # Note: the warning is hidden while the blinkers are on
     values["CF_Lkas_SysWarning"] = 4 if sys_warning else 0
   
-  elif car_fingerprint == CAR.GENESIS:
+  elif car_fingerprint == CAR.HYUNDAI_GENESIS:
     values["CF_Lkas_Bca_R"] = 2
     
-  elif car_fingerprint in [CAR.K5, CAR.K5_HEV, CAR.K7, CAR.K7_HEV]:
+  elif car_fingerprint in [CAR.KIA_CARDENZA, CAR.KIA_CARDENZA_HEV]:
     values["CF_Lkas_Bca_R"] = 0
     values["CF_Lkas_LdwsOpt_USM"] = 2
     values["CF_Lkas_FcwOpt_USM"] = 2
