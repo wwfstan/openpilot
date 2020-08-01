@@ -100,7 +100,7 @@ typedef struct UIScene {
   int frontview;
   int fullview;
 
-  int transformed_width, transformed_height;
+//  int transformed_width, transformed_height;
 
   ModelData model;
 
@@ -122,7 +122,7 @@ typedef struct UIScene {
   int ui_viz_rw;
   int ui_viz_ro;
 
-  int front_box_x, front_box_y, front_box_width, front_box_height;
+//  int front_box_x, front_box_y, front_box_width, front_box_height;
 
   std::string alert_text1;
   std::string alert_text2;
@@ -139,7 +139,7 @@ typedef struct UIScene {
   bool brakeLights;  
     
   // Used to show gps planner status
-  bool gps_planner_active;
+//  bool gps_planner_active;
 
   cereal::HealthData::HwType hwType;
   int satelliteCount;
@@ -177,7 +177,7 @@ typedef struct UIState {
   NVGcontext *vg;
 
   // fonts and images
-  int font_courbd;
+//  int font_courbd;
   int font_sans_regular;
   int font_sans_semibold;
   int font_sans_bold;
@@ -221,7 +221,7 @@ typedef struct UIState {
 
   int rgb_width, rgb_height, rgb_stride;
   size_t rgb_buf_len;
-  mat4 rgb_transform;
+//  mat4 rgb_transform;
 
   int rgb_front_width, rgb_front_height, rgb_front_stride;
   size_t rgb_front_buf_len;
