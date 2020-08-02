@@ -18,7 +18,7 @@ ACCEL_MAX = 1.5  # 1.5 m/s2
 ACCEL_MIN = -3.0 # 3   m/s2
 ACCEL_SCALE = max(ACCEL_MAX, -ACCEL_MIN)
 # SPAS steering limits
-STEER_ANG_MAX = 360          # SPAS Max Angle
+STEER_ANG_MAX = 360         # SPAS Max Angle
 STEER_ANG_MAX_RATE = 1.5    # SPAS Degrees per ms
 
 def accel_hysteresis(accel, accel_steady):
@@ -121,7 +121,7 @@ class CarController():
 
     # Disable steering while turning blinker on and speed below 60 kph
     if CS.out.leftBlinker or CS.out.rightBlinker:
-      if self.car_fingerprint not in [CAR.KIA_OPTIMA, CAR.KIA_OPTIMA_H]:
+#      if self.car_fingerprint not in [CAR.KIA_OPTIMA, CAR.KIA_OPTIMA_H]:
         self.turning_signal_timer = 100  # Disable for 1.0 Seconds after blinker turned off
       elif CS.left_blinker_flash or CS.right_blinker_flash: # Optima has blinker flash signal only
         self.turning_signal_timer = 100
@@ -182,17 +182,29 @@ class CarController():
       can_sends.append(create_lkas11(self.packer, frame, self.car_fingerprint, apply_steer, lkas_active,
                                    CS.lkas11, sys_warning, sys_state, enabled, left_lane, right_lane,
                                    left_lane_warning, right_lane_warning, 1))
-    if frame % 2 and CS.mdps_bus: # send clu11 to mdps if it is not on bus 0
+    if CS.mdps_bus: # send clu11 to mdps if it is not on bus 0
       can_sends.append(create_clu11(self.packer, frame, CS.mdps_bus, CS.clu11, Buttons.NONE, enabled_speed))
 
     if pcm_cancel_cmd and self.longcontrol:
-      can_sends.append(create_clu11(self.packer, frame, CS.scc_bus, CS.clu11, Buttons.CANCEL, clu11_speed))
-    elif CS.out.cruiseState.standstill:
-      # SCC won't resume anyway when the lead distace is less than 3.7m
-      # send resume at a max freq of 5Hz
-      if CS.lead_distance > 3.7 and (frame - self.last_resume_frame)*DT_CTRL > 0.2:
-        can_sends.append(create_clu11(self.packer, frame, CS.scc_bus, CS.clu11, Buttons.RES_ACCEL, clu11_speed))
-        self.last_resume_frame = frame
+        can_sends.append(create_clu11(self.packer, frame, CS.scc_bus, CS.clu11, Buttons.CANCEL, clu11_speed))
+
+    if CS.out.cruiseState.standstill:
+        # run only first time when the car stopped
+        if self.last_lead_distance == 0:
+            # get the lead distance from the Radar
+            self.last_lead_distance = CS.lead_distance
+            self.resume_cnt = 0
+        # when lead car starts moving, create 6 RES msgs
+        elif CS.lead_distance != self.last_lead_distance and (frame - self.last_resume_frame) > 5:
+            can_sends.append(create_clu11(self.packer, frame, CS.scc_bus, CS.clu11, Buttons.RES_ACCEL, clu11_speed))
+            self.resume_cnt += 1
+            # interval after 6 msgs
+            if self.resume_cnt > 5:
+                self.last_resume_frame = frame
+                self.clu11_cnt = 0
+    # reset lead distnce after the car starts moving
+    elif self.last_lead_distance != 0:
+        self.last_lead_distance = 0
 
     if CS.mdps_bus: # send mdps12 to LKAS to prevent LKAS error
       can_sends.append(create_mdps12(self.packer, frame, CS.mdps12))
