@@ -110,7 +110,7 @@ static void ui_draw_circle_image(NVGcontext *vg, float x, float y, int size, int
 static void ui_draw_circle_image(NVGcontext *vg, float x, float y, int size, int image, bool active) {
   float bg_alpha = active ? 0.3f : 0.1f;
   float img_alpha = active ? 1.0f : 0.15f;
-  ui_draw_circle_image(vg, x, y, size, image, nvgRGBA(0, 0, 0, (255 * bg_alpha)), img_alpha);
+  ui_draw_circle_image(vg, x, y, size, image, COLOR_BLACK_ALPHA(255 * bg_alpha), img_alpha);
 }
 
 static void draw_lead(UIState *s, const cereal::RadarState::LeadData::Reader &lead){
@@ -127,7 +127,7 @@ static void draw_lead(UIState *s, const cereal::RadarState::LeadData::Reader &le
     }
     fillAlpha = (int)(fmin(fillAlpha, 255));
   }
-  draw_chevron(s, d_rel, lead.getYRel(), 25, nvgRGBA(201, 34, 49, fillAlpha), COLOR_YELLOW);
+  draw_chevron(s, d_rel, lead.getYRel(), 25, COLOR_RED_ALPHA(fillAlpha), COLOR_YELLOW);
 }
 
 static void ui_draw_lane_line(UIState *s, const model_path_vertices_data *pvd, NVGcolor color) {
@@ -223,7 +223,7 @@ static void ui_draw_track(UIState *s, bool is_mpc, track_vertices_data *pvd) {
     // Draw colored MPC track Kegman's
     if (s->scene.steerOverride) {
       track_bg = nvgLinearGradient(s->vg, vwp_w, vwp_h, vwp_w, vwp_h*.4,
-        nvgRGBA(0, 191, 255, 255), nvgRGBA(0, 95, 128, 50));
+        COLOR_DEEPSKYBLUE, nvgRGBA(0, 95, 128, 50));
     } else {
       int torque_scale = (int)fabs(510*(float)s->scene.output_scale);
       int red_lvl = fmin(255, torque_scale);
@@ -425,7 +425,7 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 
   // Draw Background
   ui_draw_rect(s->vg, viz_maxspeed_x, viz_maxspeed_y, viz_maxspeed_w, viz_maxspeed_h,
-               is_set_over_limit ? nvgRGBA(218, 111, 37, 180) : COLOR_BLACK_ALPHA(100), 30);
+               is_set_over_limit ? COLOR_OCHRE_ALPHA(180) : COLOR_BLACK_ALPHA(100), 30);
 
   // Draw Border
   NVGcolor color = COLOR_WHITE_ALPHA(100);
@@ -478,7 +478,7 @@ static void ui_draw_vision_speedlimit(UIState *s) {
   // Draw Background
   NVGcolor color = COLOR_WHITE_ALPHA(100);
   if (is_speedlim_valid && s->is_ego_over_limit) {
-    color = nvgRGBA(218, 111, 37, 180);
+    color = COLOR_OCHRE_ALPHA(180);
   } else if (is_speedlim_valid) {
     color = COLOR_WHITE;
   }
@@ -543,11 +543,11 @@ static void ui_draw_vision_event(UIState *s) {
     const int bg_wheel_y = viz_event_y + (bg_wheel_size/2);
     NVGcolor color = COLOR_BLACK_ALPHA(0);
     if (s->status == STATUS_ENGAGED) {
-      color = nvgRGBA(23, 134, 68, 255);
+      color = COLOR_ENGAGED;
     } else if (s->status == STATUS_WARNING) {
       color = COLOR_OCHRE;
     } else {
-      color = nvgRGBA(23, 51, 73, 255);
+      color = COLOR_ENGAGEABLE;
     }
 
     if (s->scene.controls_state.getEngageable()){
@@ -597,8 +597,8 @@ static void ui_draw_driver_view(UIState *s) {
   ui_draw_rect(s->vg, scene->is_rhd ? valid_frame_x : valid_frame_x + box_h / 2, box_y, valid_frame_w - box_h / 2, box_h, COLOR_BLACK_ALPHA(144));
 
   // borders
-  ui_draw_rect(s->vg, frame_x, box_y, valid_frame_x - frame_x, box_h, nvgRGBA(23, 51, 73, 255));
-  ui_draw_rect(s->vg, valid_frame_x + valid_frame_w, box_y, frame_w - valid_frame_w - (valid_frame_x - frame_x), box_h, nvgRGBA(23, 51, 73, 255));
+  ui_draw_rect(s->vg, frame_x, box_y, valid_frame_x - frame_x, box_h, COLOR_ENGAGEABLE);
+  ui_draw_rect(s->vg, valid_frame_x + valid_frame_w, box_y, frame_w - valid_frame_w - (valid_frame_x - frame_x), box_h, COLOR_ENGAGEABLE);
 
   // draw face box
   if (scene->driver_state.getFaceProb() > 0.4) {
@@ -640,7 +640,7 @@ static void ui_draw_vision_brake(UIState *s) { //We should probably refactor thi
   bool brake_valid = scene->brakeLights;
   float brake_img_alpha = brake_valid ? 1.0f : 0.15f;
   float brake_bg_alpha = brake_valid ? 0.3f : 0.1f;
-  NVGcolor brake_bg = nvgRGBA(0, 0, 0, (255 * brake_bg_alpha));
+  NVGcolor brake_bg = COLOR_BLACK_ALPHA(255 * brake_bg_alpha);
   NVGpaint brake_img = nvgImagePattern(s->vg, brake_img_x, brake_img_y,
     brake_img_size, brake_img_size, 0, s->img_brake, brake_img_alpha);
 
@@ -675,7 +675,8 @@ static void ui_draw_vision_header(UIState *s) {
   ui_draw_vision_event(s);
 }
 
-//BB START: functions added for the display of various items
+// START : functions added for the display of various items
+
 static int bb_ui_draw_measure(UIState *s,  const char* bb_value, const char* bb_uom, const char* bb_label,
     int bb_x, int bb_y, int bb_uom_dx,
     NVGcolor bb_valueColor, NVGcolor bb_labelColor, NVGcolor bb_uomColor,
@@ -726,7 +727,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     if (true) {
     char val_str[16];
     char uom_str[6];    
-    NVGcolor val_color = COLOR_GREEN_ALPHA(200);
+    NVGcolor val_color = COLOR_LIME_ALPHA(200);
       //show Orange if more than 70°C
       //show red if more than 80°C
       if((int)((scene->maxCpuTemp)/10) > 69) {
@@ -809,7 +810,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   if (true) {
     char val_str[16];
     char uom_str[6];
-    NVGcolor val_color = COLOR_GREEN_ALPHA(200);
+    NVGcolor val_color = COLOR_LIME_ALPHA(200);
       //show Orange if more than 30 degrees
       //show red if  more than 50 degrees
       if(((int)(scene->angleSteers) < -30) || ((int)(scene->angleSteers) > 30)) {
@@ -894,7 +895,7 @@ static void bb_ui_draw_UI(UIState *s)
   bb_ui_draw_measures_right(s, bb_dmr_x, bb_dmr_y-20, bb_dmr_w);
 }
 
-//BB END: functions added for the display of various items
+// END : functions added for the display of various items
 
 static void ui_draw_vision_footer(UIState *s) {
   nvgBeginPath(s->vg);
