@@ -66,7 +66,8 @@ def create_clu11(packer, frame, bus, clu11, button, speed):
   values = clu11
   values["CF_Clu_CruiseSwState"] = button
   values["CF_Clu_Vanz"] = speed
-  values["CF_Clu_AliveCnt1"] = frame // 2 % 0x10
+#  values["CF_Clu_AliveCnt1"] = frame // 2 % 0x10
+  values["CF_Clu_AliveCnt1"] = frame % 0x10
   return packer.make_can_msg("CLU11", bus, values)
 
 def create_lfa_mfa(packer, frame, enabled):
