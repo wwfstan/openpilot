@@ -83,5 +83,5 @@ echo dd if=/data/openpilot/installer/fonts/splash.img of=/dev/block/bootdevice/b
 echo =================================================================
 echo = bootanimation
 echo mount -o rw,remount /system
-echo cp ./bootanimation /system/media/
+echo cp /data/openpilot/installer/fonts/bootanimation.zip /system/media/
 echo =================================================================
