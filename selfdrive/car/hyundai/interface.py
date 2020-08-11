@@ -32,25 +32,29 @@ class CarInterface(CarInterfaceBase):
     # Most Hyundai car ports are community features for now
     ret.communityFeature = candidate not in [CAR.SONATA]
 
-    ret.steerActuatorDelay = 0.1  # Default delay
-    ret.steerRateCost = 0.5
-    ret.steerLimitTimer = 0.8
-    tire_stiffness_factor = 1.
+#    ret.steerActuatorDelay = 0.1  # Default delay
+#    ret.steerRateCost = 0.5
+#    ret.steerLimitTimer = 0.8
+#    tire_stiffness_factor = 1.
+    ret.steerActuatorDelay = 0.08
+    ret.steerLimitTimer = 0.4
+    ret.steerRateCost = 0.25
+    tire_stiffness_factor = 0.385
 
     if candidate in [CAR.SANTA_FE, CAR.SANTA_FE_1]:
       ret.mass = 1694 + STD_CARGO_KG
       ret.wheelbase = 2.766
-      ret.steerRatio = 13.8 * 1.15  # 13.8 is spec end-to-end
+      ret.steerRatio = 13.8 * 1.15
 
     elif candidate in [CAR.SONATA, CAR.SONATA_H]:
       ret.mass = 1513. + STD_CARGO_KG
       ret.wheelbase = 2.84
-      ret.steerRatio = 13.27 * 1.15   # 15% higher at the center seems reasonable
+      ret.steerRatio = 13.27 * 1.15
 
     elif candidate == CAR.SONATA_2019:
       ret.mass = 4497. * CV.LB_TO_KG
       ret.wheelbase = 2.804
-      ret.steerRatio = 13.27 * 1.15   # 15% higher at the center seems reasonable
+      ret.steerRatio = 13.27 * 1.15
 
     elif candidate == CAR.PALISADE:
       ret.mass = 1999. + STD_CARGO_KG
@@ -60,7 +64,7 @@ class CarInterface(CarInterfaceBase):
     elif candidate == CAR.KIA_SORENTO:
       ret.mass = 1985. + STD_CARGO_KG
       ret.wheelbase = 2.78
-      ret.steerRatio = 14.4 * 1.1   # 10% higher at the center seems reasonable
+      ret.steerRatio = 14.4 * 1.1
 
     elif candidate in [CAR.ELANTRA, CAR.ELANTRA_GT_I30]:
       ret.mass = 1275. + STD_CARGO_KG
@@ -95,7 +99,7 @@ class CarInterface(CarInterfaceBase):
     elif candidate == CAR.KONA:
       ret.mass = 1275. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 13.73  # Spec
+      ret.steerRatio = 13.73
 
     elif candidate in [CAR.KONA_HEV, CAR.KONA_EV]:
       ret.mass = 1685. + STD_CARGO_KG
@@ -120,7 +124,7 @@ class CarInterface(CarInterfaceBase):
     elif candidate == CAR.KIA_SPORTAGE:
       ret.mass = 1985. + STD_CARGO_KG
       ret.wheelbase = 2.78
-      ret.steerRatio = 14.4 * 1.1   # 10% higher at the center seems reasonable
+      ret.steerRatio = 14.4 * 1.1     
 
     elif candidate in [CAR.KIA_NIRO_HEV, CAR.KIA_NIRO_EV]:
       ret.mass = 1737. + STD_CARGO_KG
@@ -136,11 +140,6 @@ class CarInterface(CarInterfaceBase):
       ret.mass = 1575. + STD_CARGO_KG
       ret.wheelbase = 2.85
       ret.steerRatio = 12.5      
-      
-    ret.steerActuatorDelay = 0.08
-    ret.steerLimitTimer = 0.4
-    ret.steerRateCost = 0.25
-    tire_stiffness_factor = 0.385
       
     ret.lateralTuning.init('lqr')
 
@@ -165,7 +164,6 @@ class CarInterface(CarInterfaceBase):
     ret.tireStiffnessFront, ret.tireStiffnessRear = scale_tire_stiffness(ret.mass, ret.wheelbase, ret.centerToFront,
                                                                          tire_stiffness_factor=tire_stiffness_factor)
 
-
     # no rear steering, at least on the listed cars above
     ret.steerRatioRear = 0.
     ret.steerControlType = car.CarParams.SteerControlType.torque
@@ -176,7 +174,6 @@ class CarInterface(CarInterfaceBase):
     ret.longitudinalTuning.kiV = [0.05, 0.02, 0.01, 0.005]
     ret.longitudinalTuning.deadzoneBP = [0., 40]
     ret.longitudinalTuning.deadzoneV = [0., 0.02]
-
 
     # steer, gas, brake limitations VS speed
     ret.steerMaxBP = [0.]
