@@ -92,8 +92,8 @@ const int TRACK_POINTS_MAX_CNT = 50 * 2;
 const int SET_SPEED_NA = 255;
 
 const uint8_t bg_colors[][4] = {
-  [STATUS_STOPPED] = {0x07, 0x23, 0x39, 0xff},
-  [STATUS_DISENGAGED] = {0x17, 0x33, 0x49, 0xff},
+  [STATUS_STOPPED] = {0x07, 0x23, 0x39, 0x7d},
+  [STATUS_DISENGAGED] = {0x17, 0x33, 0x49, 0x7d},
   [STATUS_ENGAGED] = {0x17, 0x86, 0x44, 0x0f},
   [STATUS_WARNING] = {0xDA, 0x6F, 0x25, 0x0f},
   [STATUS_ALERT] = {0xC9, 0x22, 0x31, 0xff},
@@ -139,10 +139,14 @@ typedef struct UIScene {
   bool steerOverride;
   float output_scale; 
   float steerRatio;
-  bool brakeLights;  
+  bool brakeLights;
+  float steeringTorqueEps;
+  float aEgo;
+  float gpsAccuracyUblox;
+  float altitudeUblox;
     
-  // Used to show gps planner status
-//  bool gps_planner_active;
+// Used to show gps planner status
+// bool gps_planner_active;
 
   cereal::HealthData::HwType hwType;
   int satelliteCount;
