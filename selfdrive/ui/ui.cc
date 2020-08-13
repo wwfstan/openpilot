@@ -168,7 +168,7 @@ static void ui_init(UIState *s) {
 
   pthread_mutex_init(&s->lock, NULL);
   s->sm = new SubMaster({"model", "controlsState", "uiLayoutState", "liveCalibration", "radarState", "thermal",
-                         "health", "ubloxGnss", "driverState", "dMonitoringState", "carState", "liveMpc", "liveParameters"
+                         "health", "ubloxGnss", "driverState", "dMonitoringState", "carState", "liveMpc", "liveParameters", "gpsLocationExternal"
 #ifdef SHOW_SPEEDLIMIT
                                     , "liveMapData"
 #endif
@@ -397,6 +397,9 @@ void handle_message(UIState *s, SubMaster &sm) {
     if (data.which() == cereal::UbloxGnss::MEASUREMENT_REPORT) {
       scene.satelliteCount = data.getMeasurementReport().getNumMeas();
     }
+    auto data2 = sm["gpsLocationExternal"].getGpsLocationExternal();
+    s->scene.gpsAccuracyUblox = data2.getAccuracy();
+    s->scene.altitudeUblox = data2.getAltitude();
   }
   if (sm.updated("health")) {
     scene.hwType = sm["health"].getHealth().getHwType();
@@ -412,6 +415,8 @@ void handle_message(UIState *s, SubMaster &sm) {
   } else if (sm.updated("carState")) {
     auto data = sm["carState"].getCarState();
     s->scene.brakeLights = data.getBrakeLights();
+    s->scene.aEgo = data.getAEgo();
+    s->scene.steeringTorqueEps = data.getSteeringTorqueEps();
   } 
   
   s->started = scene.thermal.getStarted() || s->preview_started;
