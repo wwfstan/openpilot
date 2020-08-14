@@ -883,6 +883,83 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     nvgStrokeWidth(s->vg, 6);
     nvgStroke(s->vg);
 }
+/*
+  //add Ublox GPS accuracy
+  if (scene->gpsAccuracyUblox != 0.00) {
+    char val_str[16];
+    char uom_str[3];
+    NVGcolor val_color = COLOR_WHITE_ALPHA(200);
+    //show red/orange if gps accuracy is low
+      if(scene->gpsAccuracyUblox > 0.85) {
+         val_color = nvgRGBA(255, 188, 3, 200);
+      }
+      if(scene->gpsAccuracyUblox > 1.3) {
+         val_color = nvgRGBA(255, 0, 0, 200);
+      }
+    // gps accuracy is always in meters
+    if(scene->gpsAccuracyUblox > 99 || scene->gpsAccuracyUblox == 0) {
+       snprintf(val_str, sizeof(val_str), "None");
+    }else if(scene->gpsAccuracyUblox > 9.99) {
+      snprintf(val_str, sizeof(val_str), "%.1f", (s->scene.gpsAccuracyUblox));
+    }
+    else {
+      snprintf(val_str, sizeof(val_str), "%.2f", (s->scene.gpsAccuracyUblox));
+    }
+    snprintf(uom_str, sizeof(uom_str), "%d", (s->scene.satelliteCount));
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "GPS PREC",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+  //add altitude
+  if (scene->gpsAccuracyUblox != 0.00) {
+    char val_str[16];
+    char uom_str[3];
+    NVGcolor val_color = COLOR_WHITE_ALPHA(200);
+    snprintf(val_str, sizeof(val_str), "%.1f", (s->scene.altitudeUblox));
+    snprintf(uom_str, sizeof(uom_str), "m");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ALTITUDE",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+    //add EPS Motor Torque
+  if (true) {
+    char val_str[16];
+    char uom_str[3];
+    NVGcolor val_color = COLOR_WHITE_ALPHA(200);
+    snprintf(val_str, sizeof(val_str), "%.0f", (s->scene.steeringTorqueEps));
+    snprintf(uom_str, sizeof(uom_str), "Nm");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "EPS TRQ",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+  //add aEgo
+  if (true) {
+    char val_str[16];
+    char uom_str[6];
+    NVGcolor val_color = COLOR_WHITE_ALPHA(200);
+    snprintf(val_str, sizeof(val_str), "%.1f", (s->scene.aEgo));
+    snprintf(uom_str, sizeof(uom_str), "m/s²");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "ACCEL",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+  //finally draw the frame
+  bb_h += 20;
+  nvgBeginPath(s->vg);
+    nvgRoundedRect(s->vg, bb_x, bb_y, bb_w, bb_h, 20);
+    nvgStrokeColor(s->vg, COLOR_WHITE_ALPHA(80));
+    nvgStrokeWidth(s->vg, 6);
+    nvgStroke(s->vg);
+}
+*/
 
 static void bb_ui_draw_UI(UIState *s)
 {
