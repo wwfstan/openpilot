@@ -574,8 +574,7 @@ static void ui_draw_vision_event(UIState *s) {
     nvgFill(s->vg);
     nvgRestore(s->vg);
     }
-  } 
-}    
+  }     
 /*   
     // draw steering wheel
     const int bg_wheel_size = 90;
@@ -594,7 +593,6 @@ static void ui_draw_vision_event(UIState *s) {
       ui_draw_circle_image(s->vg, bg_wheel_x, bg_wheel_y, bg_wheel_size, s->img_wheel, color, 1.0f, bg_wheel_y - 25);
     }
   }  
-}
 */
 
 #ifdef SHOW_SPEEDLIMIT
