@@ -290,9 +290,8 @@ void handle_message(UIState *s, SubMaster &sm) {
     scene.frontview = scene.controls_state.getRearViewCam();
     if (!scene.frontview){ s->controls_seen = true; }
 
-    scene.angleSteers = scene.controls_state.getAngleSteers();
-    scene.angleSteersDes = scene.controls_state.getAngleSteersDes();
-    
+    s->scene.angleSteers = scene.controls_state.getAngleSteers();
+    s->scene.angleSteersDes = scene.controls_state.getAngleSteersDes();
     s->scene.steerOverride = scene.controls_state.getSteerOverride();
     s->scene.output_scale = scene.controls_state.getLateralControlState().getPidState().getOutput();
     
