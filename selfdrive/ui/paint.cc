@@ -207,7 +207,6 @@ static void update_all_track_data(UIState *s) {
   }
 }
 
-
 static void ui_draw_track(UIState *s, bool is_mpc, track_vertices_data *pvd) {
  if (pvd->cnt == 0) return;
 
@@ -575,25 +574,6 @@ static void ui_draw_vision_event(UIState *s) {
     nvgRestore(s->vg);
     }
   }     
-/*   
-    // draw steering wheel
-    const int bg_wheel_size = 90;
-    const int bg_wheel_x = viz_event_x + (viz_event_w-bg_wheel_size);
-    const int bg_wheel_y = viz_event_y + (bg_wheel_size/2);
-    NVGcolor color = COLOR_BLACK_ALPHA(0);
-    if (s->status == STATUS_ENGAGED) {
-      color = COLOR_ENGAGED;
-    } else if (s->status == STATUS_WARNING) {
-      color = COLOR_OCHRE;
-    } else {
-      color = COLOR_ENGAGEABLE;
-    }
-
-    if (s->scene.controls_state.getEngageable()){
-      ui_draw_circle_image(s->vg, bg_wheel_x, bg_wheel_y, bg_wheel_size, s->img_wheel, color, 1.0f, bg_wheel_y - 25);
-    }
-  }  
-*/
 
 #ifdef SHOW_SPEEDLIMIT
 static void ui_draw_vision_map(UIState *s) {
@@ -605,7 +585,7 @@ static void ui_draw_vision_map(UIState *s) {
 #endif
 
 static void ui_draw_vision_face(UIState *s) {
-  const int face_size = 85; //Made the DM Face a bit smaller -wirelessnet2
+  const int face_size = 85; \
   const int face_x = (s->scene.ui_viz_rx + face_size + (bdr_is * 2));
   const int face_y = (footer_y + ((footer_h - face_size) / 2));
   ui_draw_circle_image(s->vg, face_x, face_y+border_shifter+25, face_size-5, s->img_face, s->scene.controls_state.getDriverMonitoringOn());
@@ -667,10 +647,10 @@ static void ui_draw_driver_view(UIState *s) {
   ui_draw_circle_image(s->vg, x, y+border_shifter+25, face_size-5, s->img_face, scene->driver_state.getFaceProb() > 0.4);
 }
 
-static void ui_draw_vision_brake(UIState *s) { //We should probably refactor this to use ui_draw_circle_image() -wirelessnet2
+static void ui_draw_vision_brake(UIState *s) {
   const UIScene *scene = &s->scene;
-  const int brake_size = 85; //made the Brake Icon a bit smaller -wirelessnet2
-  const int brake_x = (scene->ui_viz_rx + (brake_size * 3) + (bdr_is * 2.5)); //Moved brake icon a bit closer to DM icon -wirelessnet2
+  const int brake_size = 85;
+  const int brake_x = (scene->ui_viz_rx + (brake_size * 3) + (bdr_is * 2.5));
   const int brake_y = (footer_y + ((footer_h - brake_size) / 2));
   const int brake_img_size = (brake_size * 1.5);
   const int brake_img_x = (brake_x - (brake_img_size / 2));
@@ -886,7 +866,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
       // steering is in degrees
       snprintf(val_str, sizeof(val_str), "%.1f°",(s->scene.angleSteersDes));
     } else {
-       snprintf(val_str, sizeof(val_str), "-");
+      snprintf(val_str, sizeof(val_str), "-");
     }
       snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "OP 조향각",
@@ -904,7 +884,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     if (scene->controls_state.getEnabled()) {
       snprintf(val_str, sizeof(val_str), "%.2f",(scene->steerRatio));
     } else {
-       snprintf(val_str, sizeof(val_str), "-");
+      snprintf(val_str, sizeof(val_str), "-");
     }
       snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "SteerRatio",
