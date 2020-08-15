@@ -545,7 +545,7 @@ static void ui_draw_vision_event(UIState *s) {
     const int img_wheel_size = bg_wheel_size*1.5;
     const int img_wheel_x = bg_wheel_x-(img_wheel_size/2);
     const int img_wheel_y = bg_wheel_y-25;
-    const float img_rotation = (scene->angleSteers)/180*3.141592;
+    const float img_rotation = s->scene.angleSteers/180*3.141592;
     float img_wheel_alpha = 0.1f;
     bool is_engaged = (s->status == STATUS_ENGAGED);
     bool is_warning = (s->status == STATUS_WARNING);
@@ -861,7 +861,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
         val_color = COLOR_RED_ALPHA(200);
       }
       // steering is in degrees
-      snprintf(val_str, sizeof(val_str), "%.1f°",(scene->angleSteers));
+      snprintf(val_str, sizeof(val_str), "%.1f°",(s->scene.angleSteers));
 
       snprintf(uom_str, sizeof(uom_str), "");
     bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "핸들 조향각",
@@ -886,7 +886,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
         val_color = COLOR_WHITE_ALPHA(200);
       }
       // steering is in degrees
-      snprintf(val_str, sizeof(val_str), "%.1f°",(scene->angleSteersDes));
+      snprintf(val_str, sizeof(val_str), "%.1f°",(s->scene.angleSteersDes));
     } else {
        snprintf(val_str, sizeof(val_str), "-");
     }
