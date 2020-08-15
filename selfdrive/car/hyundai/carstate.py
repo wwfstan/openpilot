@@ -25,6 +25,10 @@ class CarState(CarStateBase):
     self.mdps_error_cnt = 0
     self.spas_enabled = CP.spasEnabled
     
+    # BSM
+    self.leftBlindspot_time = 0
+    self.rightBlindspot_time = 0
+
     # blinker
     self.left_blinker_flash = 0
     self.right_blinker_flash = 0  
@@ -55,6 +59,8 @@ class CarState(CarStateBase):
     ret.wheelSpeeds.rr = cp.vl["WHL_SPD11"]['WHL_SPD_RR'] * CV.KPH_TO_MS
     ret.vEgoRaw = (ret.wheelSpeeds.fl + ret.wheelSpeeds.fr + ret.wheelSpeeds.rl + ret.wheelSpeeds.rr) / 4.
     ret.vEgo, ret.aEgo = self.update_speed_kf(ret.vEgoRaw)
+
+    ret.vEgo = cp.vl["CLU11"]["CF_Clu_Vanz"] * CV.KPH_TO_MS
 
     ret.standstill = ret.vEgoRaw < 0.1
 
@@ -161,8 +167,12 @@ class CarState(CarStateBase):
 
     # Blind Spot Detection and Lane Change Assist signals
     self.lca_state = cp.vl["LCA11"]["CF_Lca_Stat"]
-    ret.leftBlindspot = cp.vl["LCA11"]["CF_Lca_IndLeft"] != 0
-    ret.rightBlindspot = cp.vl["LCA11"]["CF_Lca_IndRight"] != 0
+    #ret.leftBlindspot = cp.vl["LCA11"]["CF_Lca_IndLeft"] != 0
+    #ret.rightBlindspot = cp.vl["LCA11"]["CF_Lca_IndRight"] != 0
+
+    ret.leftBlindspot, ret.rightBlindspot = self.get_BSM(cp)
+
+
 
     # save the entire LKAS11, CLU11, SCC12 and MDPS12
     self.lkas11 = cp_cam.vl["LKAS11"]
@@ -604,3 +614,24 @@ class CarState(CarStateBase):
     leftBlinker = self.left_blinker_flash != 0
     rightBlinker = self.right_blinker_flash != 0
     return  leftBlinker, rightBlinker
+
+  def get_BSM(self, cp):
+    #leftBlindspot = False
+    #rightBlindspot = False
+    leftBlindspot = cp.vl["LCA11"]["CF_Lca_IndLeft"] != 0
+    rightBlindspot = cp.vl["LCA11"]["CF_Lca_IndRight"] != 0
+
+    if leftBlindspot != 0:
+      self.leftBlindspot_time = 200
+    elif self.leftBlindspot_time:
+      self.leftBlindspot_time -=  1
+
+    if rightBlindspot != 0:
+      self.rightBlindspot_time = 200
+    elif self.rightBlindspot_time:
+      self.rightBlindspot_time -= 1
+
+    leftBlindspot = self.leftBlindspot_time != 0
+    rightBlindspot = self.rightBlindspot_time != 0
+
+    return  leftBlindspot, rightBlindspot
