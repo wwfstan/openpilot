@@ -1,6 +1,6 @@
 import numpy as np
 from selfdrive.controls.lib.drive_helpers import get_steer_max
-from common.numpy_fast import clip
+from common.numpy_fast import clip, interp
 from common.realtime import DT_CTRL
 from cereal import log
 
@@ -48,14 +48,15 @@ class LatControlLQR():
 
     steers_max = get_steer_max(CP, CS.vEgo)
     torque_scale = (0.45 + CS.vEgo / 60.0)**2  # Scale actuator model with speed
-    torque_scale = min(torque_scale, 0.6)
-
+   
     steering_angle = CS.steeringAngle
 
     # Subtract offset. Zero angle should correspond to zero torque
     self.angle_steers_des = path_plan.angleSteers - path_plan.angleOffset
     steering_angle -= path_plan.angleOffset
 
+    torque_scale = min(torque_scale, interp(abs(self.angle_steers_des), [5., 45.], [0.6, 1.2]))
+    
     # Update Kalman filter
     angle_steers_k = float(self.C.dot(self.x_hat))
     e = steering_angle - angle_steers_k
