@@ -379,17 +379,8 @@ void handle_message(UIState *s, SubMaster &sm) {
   if (sm.updated("thermal")) {
     scene.thermal = sm["thermal"].getThermal();
     auto data = sm["thermal"].getThermal();
-    
-    scene.maxCpuTemp = data.getCpu0();
-    if (scene.maxCpuTemp < data.getCpu0())
-      scene.maxCpuTemp = data.getCpu0();
-    else if (scene.maxCpuTemp < data.getCpu1())
-      scene.maxCpuTemp = data.getCpu1();
-    else if (scene.maxCpuTemp < data.getCpu2())
-      scene.maxCpuTemp = data.getCpu2();
-    else if (scene.maxCpuTemp < data.getCpu3())
-      scene.maxCpuTemp = data.getCpu3();
-        
+
+    scene.maxCpuTemp = (data.getCpu0() + data.getCpu1() + data.getCpu2() + data.getCpu3()) / 4;       
   }
   if (sm.updated("ubloxGnss")) {
     auto data = sm["ubloxGnss"].getUbloxGnss();
