@@ -48,6 +48,7 @@ class LatControlLQR():
 
     steers_max = get_steer_max(CP, CS.vEgo)
     torque_scale = (0.45 + CS.vEgo / 60.0)**2  # Scale actuator model with speed
+    torque_scale = min(torque_scale, 0.6)
    
     steering_angle = CS.steeringAngle
 
