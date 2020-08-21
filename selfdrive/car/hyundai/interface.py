@@ -37,105 +37,97 @@ class CarInterface(CarInterfaceBase):
     ret.steerRateCost = 0.25          # 0.5
     tire_stiffness_factor = 0.385     # 1
 
-    if candidate in [CAR.SANTA_FE, CAR.SANTA_FE_1]:
-      ret.mass = 1694 + STD_CARGO_KG
-      ret.wheelbase = 2.766
-      ret.steerRatio = 13.8 * 1.15
-
-    elif candidate in [CAR.SONATA, CAR.SONATA_H]:
-      ret.mass = 1513. + STD_CARGO_KG
-      ret.wheelbase = 2.84
-      ret.steerRatio = 13.27 * 1.15
-
-    elif candidate == CAR.SONATA_2019:
-      ret.mass = 4497. * CV.LB_TO_KG
-      ret.wheelbase = 2.804
-      ret.steerRatio = 13.27 * 1.15
-
-    elif candidate == CAR.PALISADE:
-      ret.mass = 1999. + STD_CARGO_KG
-      ret.wheelbase = 2.90
-      ret.steerRatio = 13.75 * 1.15
-
-    elif candidate == CAR.KIA_SORENTO:
-      ret.mass = 1985. + STD_CARGO_KG
-      ret.wheelbase = 2.78
-      ret.steerRatio = 14.4 * 1.1
-
-    elif candidate in [CAR.ELANTRA, CAR.ELANTRA_GT_I30]:
-      ret.mass = 1275. + STD_CARGO_KG
-      ret.wheelbase = 2.7
-      ret.steerRatio = 15.4
-
-    elif candidate == CAR.HYUNDAI_GENESIS:
+    # genesis
+    if candidate == CAR.GENESIS:
       ret.mass = 2060. + STD_CARGO_KG
       ret.wheelbase = 3.01
       ret.steerRatio = 16.5
-
+    elif candidate == CAR.GENESIS_G70: 
+      ret.mass = 1640. + STD_CARGO_KG 
+      ret.wheelbase = 2.84 
+      ret.steerRatio = 16.5  
     elif candidate == CAR.GENESIS_G80:
       ret.mass = 2060. + STD_CARGO_KG
       ret.wheelbase = 3.01
       ret.steerRatio = 16.5
-
     elif candidate == CAR.GENESIS_G90:
       ret.mass = 2200
       ret.wheelbase = 3.15
       ret.steerRatio = 12.069
-
-    elif candidate in [CAR.KIA_OPTIMA, CAR.KIA_OPTIMA_H]:
-      ret.mass = 1525. + STD_CARGO_KG
-      ret.wheelbase = 2.80
+    # hyundai
+    elif candidate in [CAR.SANTA_FE]:
+      ret.mass = 1694 + STD_CARGO_KG
+      ret.wheelbase = 2.766
+      ret.steerRatio = 13.8 * 1.15  # 13.8 is spec end-to-end
+    elif candidate in [CAR.SONATA, CAR.SONATA_HEV]:
+      ret.mass = 1513. + STD_CARGO_KG
+      ret.wheelbase = 2.84
+      ret.steerRatio = 13.27 * 1.15   # 15% higher at the center seems reasonable
+    elif candidate in [CAR.SONATA19, CAR.SONATA19_HEV]:
+      ret.mass = 4497. * CV.LB_TO_KG
+      ret.wheelbase = 2.804
+      ret.steerRatio = 13.27 * 1.15   # 15% higher at the center seems reasonable
+    elif candidate == CAR.PALISADE:
+      ret.mass = 1999. + STD_CARGO_KG
+      ret.wheelbase = 2.90
       ret.steerRatio = 13.75 * 1.15
-
-    elif candidate == CAR.KIA_STINGER:
-      ret.mass = 1825.0 + STD_CARGO_KG
-      ret.wheelbase = 2.906
-      ret.steerRatio = 13.56
-      
+    elif candidate in [CAR.ELANTRA, CAR.ELANTRA_GT_I30]:
+      ret.mass = 1275. + STD_CARGO_KG
+      ret.wheelbase = 2.7
+      ret.steerRatio = 15.4            # 14 is Stock | Settled Params Learner values are steerRatio: 15.401566348670535
     elif candidate == CAR.KONA:
       ret.mass = 1275. + STD_CARGO_KG
       ret.wheelbase = 2.7
-      ret.steerRatio = 13.73
-
+      ret.steerRatio = 13.73  # Spec
     elif candidate in [CAR.KONA_HEV, CAR.KONA_EV]:
       ret.mass = 1685. + STD_CARGO_KG
       ret.wheelbase = 2.7
       ret.steerRatio = 13.73   
- 
     elif candidate in [CAR.IONIQ, CAR.IONIQ_EV_LTD]:
-      ret.mass = 1490. + STD_CARGO_KG
+      ret.mass = 1490. + STD_CARGO_KG   #weight per hyundai site https://www.hyundaiusa.com/ioniq-electric/specifications.aspx
       ret.wheelbase = 2.7
-      ret.steerRatio = 13.73
-
-    elif candidate == CAR.KIA_FORTE:
-      ret.mass = 3558. * CV.LB_TO_KG
-      ret.wheelbase = 2.80
-      ret.steerRatio = 13.75
-
-    elif candidate == CAR.KIA_CEED:
-      ret.mass = 1350. + STD_CARGO_KG
-      ret.wheelbase = 2.65
-      ret.steerRatio = 13.75
-
-    elif candidate == CAR.KIA_SPORTAGE:
-      ret.mass = 1985. + STD_CARGO_KG
-      ret.wheelbase = 2.78
-      ret.steerRatio = 14.4 * 1.1     
-
-    elif candidate in [CAR.KIA_NIRO_HEV, CAR.KIA_NIRO_EV]:
-      ret.mass = 1737. + STD_CARGO_KG
-      ret.wheelbase = 2.7
-      ret.steerRatio = 13.73
-
+      ret.steerRatio = 13.73   #Spec
     elif candidate in [CAR.GRANDEUR, CAR.GRANDEUR_HEV]:
       ret.mass = 1719. + STD_CARGO_KG
       ret.wheelbase = 2.8
       ret.steerRatio = 12.5
-      
-    elif candidate in [CAR.KIA_CARDENZA, CAR.KIA_CARDENZA_HEV]:
+    elif candidate == CAR.VELOSTER:
+      ret.mass = 3558. * CV.LB_TO_KG
+      ret.wheelbase = 2.80
+      ret.steerRatio = 13.75 * 1.15
+    # kia  
+    elif candidate == CAR.SORENTO:
+      ret.mass = 1985. + STD_CARGO_KG
+      ret.wheelbase = 2.78
+      ret.steerRatio = 14.4 * 1.1   # 10% higher at the center seems reasonable
+    elif candidate in [CAR.OPTIMA, CAR.OPTIMA_HEV]:
+      ret.mass = 3558. * CV.LB_TO_KG
+      ret.wheelbase = 2.80
+      ret.steerRatio = 13.75 * 1.15
+    elif candidate == CAR.STINGER:
+      ret.mass = 1825.0 + STD_CARGO_KG
+      ret.wheelbase = 2.906 # https://www.kia.com/us/en/stinger/specs
+      ret.steerRatio = 13.56   # 10.28 measured by wheel alignment machine/reported steering angle by OP. 2020 GT Limited AWD has a variable steering ratio ultimately ending in 10.28.  13.56 after 1200km in LiveParamaters (Tunder)
+    elif candidate == CAR.FORTE:
+      ret.mass = 3558. * CV.LB_TO_KG
+      ret.wheelbase = 2.80
+      ret.steerRatio = 13.75
+    elif candidate == CAR.CEED:
+      ret.mass = 1350. + STD_CARGO_KG
+      ret.wheelbase = 2.65
+      ret.steerRatio = 13.75
+    elif candidate == CAR.SPORTAGE:
+      ret.mass = 1985. + STD_CARGO_KG
+      ret.wheelbase = 2.78
+      ret.steerRatio = 14.4 * 1.1   # 10% higher at the center seems reasonable
+    elif candidate in [CAR.NIRO_HEV, CAR.NIRO_EV]:
+      ret.mass = 1737. + STD_CARGO_KG
+      ret.wheelbase = 2.7
+      ret.steerRatio = 13.73      
+    elif candidate in [CAR.CARDENZA, CAR.CARDENZA_HEV]:
       ret.mass = 1575. + STD_CARGO_KG
       ret.wheelbase = 2.85
-      ret.steerRatio = 12.5      
+      ret.steerRatio = 12.5
       
     ret.lateralTuning.init('lqr')
 
