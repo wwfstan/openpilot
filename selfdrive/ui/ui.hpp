@@ -50,13 +50,7 @@
 #define COLOR_ENGAGED nvgRGBA(23, 134, 68, 255)
 #define COLOR_ENGAGEABLE nvgRGBA(23, 51, 73, 255)
 
-#ifndef QCOM
-#define UI_60FPS
-#endif
-
 #define UI_BUF_COUNT 4
-//#define SHOW_SPEEDLIMIT 1
-//#define DEBUG_TURN
 
 const int vwp_w = 1920;
 const int vwp_h = 1080;
@@ -83,7 +77,7 @@ const int home_btn_w = 180;
 const int home_btn_x = 60;
 const int home_btn_y = vwp_h - home_btn_h - 40;
 
-const int UI_FREQ = 30; // Hz
+const int UI_FREQ = 20; // Hz
 
 const int MODEL_PATH_MAX_VERTICES_CNT = 98;
 //const int MODEL_LANE_PATH_CNT = 3;
@@ -118,9 +112,7 @@ typedef struct UIScene {
   bool speedlimit_valid;
 
   bool is_rhd;
-  bool map_valid;
   bool uilayout_sidebarcollapsed;
-  bool uilayout_mapenabled;
   // responsive layout
   int ui_viz_rx;
   int ui_viz_rw;
@@ -192,7 +184,6 @@ typedef struct UIState {
   int img_wheel;
   int img_turn;
   int img_face;
-  int img_map;
   int img_brake;
   int img_button_settings;
   int img_button_home;
@@ -240,12 +231,7 @@ typedef struct UIState {
   // timeouts
   int awake_timeout;
   int controls_timeout;
-  int speed_lim_off_timeout;
-  int is_metric_timeout;
-  int longitudinal_control_timeout;
-  int limit_set_speed_timeout;
   int hardware_timeout;
-  int last_athena_ping_timeout;
 
   bool controls_seen;
 
@@ -253,8 +239,6 @@ typedef struct UIState {
   int status;
   bool is_metric;
   bool longitudinal_control;
-  bool limit_set_speed;
-  float speed_lim_off;
   bool is_ego_over_limit;
   float alert_blinking_alpha;
   bool alert_blinked;
