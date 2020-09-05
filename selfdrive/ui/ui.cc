@@ -856,7 +856,7 @@ int main(int argc, char* argv[]) {
       ui_draw_vision_alert(s, s->scene.alert_size, s->status, s->scene.alert_text1.c_str(), s->scene.alert_text2.c_str());
     }
 
-    int param_read = read_param_timeout(&s->last_athena_ping, "LastAthenaPingTime", &s->last_athena_ping_timeout);
+    int param_read = read_param_timeout(&s->last_athena_ping, "LastAthenaPingTime");
     if (param_read != -1) { // Param was updated this loop
       if (param_read != 0) { // Failed to read param
         s->scene.athenaStatus = NET_DISCONNECTED;
