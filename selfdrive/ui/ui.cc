@@ -392,7 +392,6 @@ void handle_message(UIState *s, SubMaster &sm) {
     }
   } else if (s->status == STATUS_STOPPED) {
     update_status(s, STATUS_DISENGAGED);
-    s->started_frame = s->sm->frame;    
     s->active_app = cereal::UiLayoutState::App::NONE;
   }
 }
@@ -846,16 +845,14 @@ int main(int argc, char* argv[]) {
     }
 
   // Read params
-  if ((s->sm)->frame % (5*UI_FREQ) == 0) {
-    read_param(&s->is_metric, "IsMetric");
-  } else if ((s->sm)->frame % (6*UI_FREQ) == 0) {
     int param_read = read_param(&s->last_athena_ping, "LastAthenaPingTime");
-    if (param_read != 0) { // Failed to read param
-      s->scene.athenaStatus = NET_DISCONNECTED;
-    } else if (nanos_since_boot() - s->last_athena_ping < 70e9) {
-      s->scene.athenaStatus = NET_CONNECTED;
-    } else {
-      s->scene.athenaStatus = NET_ERROR;
+    if (param_read != -1) { // Param was updated this loop
+      if (param_read != 0) { // Failed to read param
+        s->scene.athenaStatus = NET_DISCONNECTED;
+      } else if (nanos_since_boot() - s->last_athena_ping < 70e9) {
+        s->scene.athenaStatus = NET_CONNECTED;
+      } else {
+        s->scene.athenaStatus = NET_ERROR;
       }
     }
     update_offroad_layout_state(s);
