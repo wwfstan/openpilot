@@ -169,10 +169,7 @@ static void ui_init(UIState *s) {
   pthread_mutex_init(&s->lock, NULL);
   s->sm = new SubMaster({"model", "controlsState", "uiLayoutState", "liveCalibration", "radarState", "thermal",
                          "health", "ubloxGnss", "driverState", "dMonitoringState", "carState", "liveMpc", "liveParameters", "gpsLocationExternal"
-#ifdef SHOW_SPEEDLIMIT
-                                    , "liveMapData"
-#endif
-  });
+                        });
   s->pm = new PubMaster({"offroadLayout"});
 
   s->ipc_fd = -1;
@@ -234,15 +231,8 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
     0.0f, 0.0f, 0.0f, 1.0f,
   }}; */
 
-  read_param(&s->speed_lim_off, "SpeedLimitOffset");
   read_param(&s->is_metric, "IsMetric");
   read_param(&s->longitudinal_control, "LongitudinalControl");
-  read_param(&s->limit_set_speed, "LimitSetSpeed");
-
-  // Set offsets so params don't get read at the same time
-  s->longitudinal_control_timeout = UI_FREQ / 3;
-  s->is_metric_timeout = UI_FREQ / 2;
-  s->limit_set_speed_timeout = UI_FREQ;
 }
 
 static void read_path(PathData& p, const cereal::ModelData::PathData::Reader &pathp) {
@@ -271,7 +261,7 @@ static void read_model(ModelData &d, const cereal::ModelData::Reader &model) {
   read_path(d.right_lane, model.getRightLane());
   auto leadd = model.getLead();
   d.lead = (LeadData){
-      .dist = leadd.getDist(), .prob = leadd.getProb(), .std = leadd.getStd(),
+    .dist = leadd.getDist(), .prob = leadd.getProb(), .std = leadd.getStd(),
   };
 }
 
@@ -371,11 +361,6 @@ void handle_message(UIState *s, SubMaster &sm) {
     s->active_app = data.getActiveApp();
     scene.uilayout_sidebarcollapsed = data.getSidebarCollapsed();
   }
-#ifdef SHOW_SPEEDLIMIT
-  if (sm.updated("liveMapData")) {
-    scene.map_valid = sm["liveMapData"].getLiveMapData().getMapValid();
-  }
-#endif
   if (sm.updated("thermal")) {
     scene.thermal = sm["thermal"].getThermal();
     auto data = sm["thermal"].getThermal();
@@ -417,12 +402,6 @@ void handle_message(UIState *s, SubMaster &sm) {
       s->vision_seen = false;
       s->controls_seen = false;
       s->active_app = cereal::UiLayoutState::App::HOME;
-
-      #ifndef QCOM
-      // disconnect from visionipc on PC
-      close(s->ipc_fd);
-      s->ipc_fd = -1;
-      #endif
     }
   } else if (s->status == STATUS_STOPPED) {
     update_status(s, STATUS_DISENGAGED);
