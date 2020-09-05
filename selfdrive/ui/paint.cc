@@ -390,38 +390,27 @@ static void ui_draw_world(UIState *s) {
 }
 
 static void ui_draw_vision_maxspeed(UIState *s) {
-  /*if (!s->longitudinal_control){
-    return;
-  }*/
   char maxspeed_str[32];
   float maxspeed = s->scene.controls_state.getVCruise();
   int maxspeed_calc = maxspeed * 0.6225 + 0.5;
   float speedlimit = s->scene.speedlimit;
   int speedlim_calc = speedlimit * 2.2369363 + 0.5;
-  int speed_lim_off = s->speed_lim_off * 2.2369363 + 0.5;
   if (s->is_metric) {
     maxspeed_calc = maxspeed + 0.5;
     speedlim_calc = speedlimit * 3.6 + 0.5;
-    speed_lim_off = s->speed_lim_off * 3.6 + 0.5;
   }
 
   bool is_cruise_set = (maxspeed != 0 && maxspeed != SET_SPEED_NA);
   bool is_speedlim_valid = s->scene.speedlimit_valid;
   bool is_set_over_limit = is_speedlim_valid && s->scene.controls_state.getEnabled() &&
-                       is_cruise_set && maxspeed_calc > (speedlim_calc + speed_lim_off);
+                       is_cruise_set && maxspeed_calc > speedlim_calc;
 
   int viz_maxspeed_w = 184;
   int viz_maxspeed_h = 202;
   int viz_maxspeed_x = (s->scene.ui_viz_rx + (bdr_is*2));
   int viz_maxspeed_y = (box_y + (bdr_is*1.5));
   int viz_maxspeed_xo = 180;
-
-#ifdef SHOW_SPEEDLIMIT
-  viz_maxspeed_w += viz_maxspeed_xo;
-  viz_maxspeed_x += viz_maxspeed_w - (viz_maxspeed_xo * 2);
-#else
   viz_maxspeed_xo = 0;
-#endif
 
   // Draw Background
   ui_draw_rect(s->vg, viz_maxspeed_x, viz_maxspeed_y, viz_maxspeed_w, viz_maxspeed_h,
@@ -448,65 +437,6 @@ static void ui_draw_vision_maxspeed(UIState *s) {
     ui_draw_text(s->vg, text_x, 210, "-", 40 * 2.5, COLOR_WHITE_ALPHA(100), s->font_sans_semibold);
   }
 }
-
-#ifdef SHOW_SPEEDLIMIT
-static void ui_draw_vision_speedlimit(UIState *s) {
-  char speedlim_str[32];
-  float speedlimit = s->scene.speedlimit;
-  int speedlim_calc = speedlimit * 2.2369363 + 0.5;
-  if (s->is_metric) {
-    speedlim_calc = speedlimit * 3.6 + 0.5;
-  }
-
-  bool is_speedlim_valid = s->scene.speedlimit_valid;
-  float hysteresis_offset = 0.5;
-  if (s->is_ego_over_limit) {
-    hysteresis_offset = 0.0;
-  }
-  s->is_ego_over_limit = is_speedlim_valid && s->scene.controls_state.getVEgo() > (speedlimit + s->speed_lim_off + hysteresis_offset);
-
-  int viz_speedlim_w = 180;
-  int viz_speedlim_h = 202;
-  int viz_speedlim_x = (s->scene.ui_viz_rx + (bdr_is*2));
-  int viz_speedlim_y = (box_y + (bdr_is*1.5));
-  if (!is_speedlim_valid) {
-    viz_speedlim_w -= 5;
-    viz_speedlim_h -= 10;
-    viz_speedlim_x += 9;
-    viz_speedlim_y += 5;
-  }
-  // Draw Background
-  NVGcolor color = COLOR_WHITE_ALPHA(100);
-  if (is_speedlim_valid && s->is_ego_over_limit) {
-    color = COLOR_OCHRE_ALPHA(180);
-  } else if (is_speedlim_valid) {
-    color = COLOR_WHITE;
-  }
-  ui_draw_rect(s->vg, viz_speedlim_x, viz_speedlim_y, viz_speedlim_w, viz_speedlim_h, color, is_speedlim_valid ? 30 : 15);
-
-  // Draw Border
-  if (is_speedlim_valid) {
-    ui_draw_rect(s->vg, viz_speedlim_x, viz_speedlim_y, viz_speedlim_w, viz_speedlim_h,
-                 s->is_ego_over_limit ? COLOR_OCHRE : COLOR_WHITE, 20, 10);
-  }
-  const float text_x = viz_speedlim_x + viz_speedlim_w / 2;
-  const float text_y = viz_speedlim_y + (is_speedlim_valid ? 50 : 45);
-  // Draw "Speed Limit" Text
-  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
-  color = is_speedlim_valid && s->is_ego_over_limit ? COLOR_WHITE : COLOR_BLACK;
-  ui_draw_text(s->vg, text_x + (is_speedlim_valid ? 6 : 0), text_y, "SMART", 50, color, s->font_sans_semibold);
-  ui_draw_text(s->vg, text_x + (is_speedlim_valid ? 6 : 0), text_y + 40, "SPEED", 50, color, s->font_sans_semibold);
-
-  // Draw Speed Text
-  color = s->is_ego_over_limit ? COLOR_WHITE : COLOR_BLACK;
-  if (is_speedlim_valid) {
-    snprintf(speedlim_str, sizeof(speedlim_str), "%d", speedlim_calc);
-    ui_draw_text(s->vg, text_x, viz_speedlim_y + (is_speedlim_valid ? 170 : 165), speedlim_str, 48*2.5, color, s->font_sans_bold);
-  } else {
-    ui_draw_text(s->vg, text_x, viz_speedlim_y + (is_speedlim_valid ? 170 : 165), "N/A", 42*2.5, color, s->font_sans_semibold);
-  }
-}
-#endif
 
 static void ui_draw_vision_speed(UIState *s) {
   const UIScene *scene = &s->scene;
@@ -574,15 +504,6 @@ static void ui_draw_vision_event(UIState *s) {
     nvgRestore(s->vg);
     }
   }     
-
-#ifdef SHOW_SPEEDLIMIT
-static void ui_draw_vision_map(UIState *s) {
-  const int map_size = 96;
-  const int map_x = (s->scene.ui_viz_rx + (map_size * 5) + (bdr_is * 3));
-  const int map_y = (footer_y + ((footer_h - map_size) / 2));
-  ui_draw_circle_image(s->vg, map_x, map_y+border_shifter+25, map_size-5, s->img_map, s->scene.map_valid);
-}
-#endif
 
 static void ui_draw_vision_face(UIState *s) {
   const int face_size = 85; \
@@ -686,10 +607,6 @@ static void ui_draw_vision_header(UIState *s) {
   ui_draw_rect(s->vg, ui_viz_rx, box_y, ui_viz_rw, header_h, gradient);
 
   ui_draw_vision_maxspeed(s);
-
-#ifdef SHOW_SPEEDLIMIT
-  ui_draw_vision_speedlimit(s);
-#endif
   ui_draw_vision_speed(s);
   ui_draw_vision_event(s);
 }
@@ -994,15 +911,8 @@ static void bb_ui_draw_UI(UIState *s)
 // END : functions added for the display of various items
 
 static void ui_draw_vision_footer(UIState *s) {
-  nvgBeginPath(s->vg);
-  nvgRect(s->vg, s->scene.ui_viz_rx, footer_y, s->scene.ui_viz_rw, footer_h);
-
   ui_draw_vision_face(s);
   ui_draw_vision_brake(s);
-
-#ifdef SHOW_SPEEDLIMIT
-  // ui_draw_vision_map(s);
-#endif
   bb_ui_draw_UI(s);
 }
 
@@ -1022,8 +932,8 @@ void ui_draw_vision_alert(UIState *s, cereal::ControlsState::AlertSize va_size, 
   const uint8_t *color = alert_colors[va_color];
   int alr_s = alert_size_map[va_size];
 
-  const int alr_x = scene->ui_viz_rx-(mapEnabled?(hasSidebar?nav_w:(nav_ww)):0)-bdr_is;
-  const int alr_w = scene->ui_viz_rw+(mapEnabled?(hasSidebar?nav_w:(nav_ww)):0)+(bdr_is*2);
+  const int alr_x = scene->ui_viz_rx - bdr_is;
+  const int alr_w = scene->ui_viz_rw + (bdr_is*2);
   const int alr_h = alr_s+(va_size==cereal::ControlsState::AlertSize::NONE?0:bdr_is);
   const int alr_y = vwp_h-alr_h;
 
@@ -1225,8 +1135,6 @@ void ui_nvg_init(UIState *s) {
   assert(s->img_turn != 0);
   s->img_face = nvgCreateImage(s->vg, "../assets/img_driver_face.png", 1);
   assert(s->img_face != 0);
-  s->img_map = nvgCreateImage(s->vg, "../assets/img_map.png", 1);
-  assert(s->img_map != 0);
   s->img_brake = nvgCreateImage(s->vg, "../assets/img_brake_disc.png", 1);
   assert(s->img_brake >= 0);
   s->img_button_settings = nvgCreateImage(s->vg, "../assets/images/button_settings.png", 1);
