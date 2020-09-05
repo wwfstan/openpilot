@@ -925,7 +925,7 @@ void ui_draw_vision_alert(UIState *s, cereal::ControlsState::AlertSize va_size, 
       {cereal::ControlsState::AlertSize::FULL, vwp_h}};
 
   const UIScene *scene = &s->scene;
-  const bool hasSidebar = !s->scene->uilayout_sidebarcollapsed;
+  const bool hasSidebar = !s->scene.uilayout_sidebarcollapsed;
   bool longAlert1 = strlen(va_text1) > 15;
 
   const uint8_t *color = alert_colors[va_color];
