@@ -232,7 +232,6 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   }}; */
 
   read_param(&s->is_metric, "IsMetric");
-  read_param(&s->longitudinal_control, "LongitudinalControl");
 }
 
 static void read_path(PathData& p, const cereal::ModelData::PathData::Reader &pathp) {
@@ -857,10 +856,6 @@ int main(int argc, char* argv[]) {
       ui_draw_vision_alert(s, s->scene.alert_size, s->status, s->scene.alert_text1.c_str(), s->scene.alert_text2.c_str());
     }
 
-    read_param_timeout(&s->is_metric, "IsMetric", &s->is_metric_timeout);
-    read_param_timeout(&s->longitudinal_control, "LongitudinalControl", &s->longitudinal_control_timeout);
-    read_param_timeout(&s->limit_set_speed, "LimitSetSpeed", &s->limit_set_speed_timeout);
-    read_param_timeout(&s->speed_lim_off, "SpeedLimitOffset", &s->limit_set_speed_timeout);
     int param_read = read_param_timeout(&s->last_athena_ping, "LastAthenaPingTime", &s->last_athena_ping_timeout);
     if (param_read != -1) { // Param was updated this loop
       if (param_read != 0) { // Failed to read param
