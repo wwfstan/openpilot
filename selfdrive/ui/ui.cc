@@ -392,6 +392,7 @@ void handle_message(UIState *s, SubMaster &sm) {
     }
   } else if (s->status == STATUS_STOPPED) {
     update_status(s, STATUS_DISENGAGED);
+    s->started_frame = s->sm->frame;    
     s->active_app = cereal::UiLayoutState::App::NONE;
   }
 }
