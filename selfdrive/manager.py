@@ -189,6 +189,8 @@ managed_processes = {
   "updated": "selfdrive.updated",
   "dmonitoringmodeld": ("selfdrive/modeld", ["./dmonitoringmodeld"]),
   "modeld": ("selfdrive/modeld", ["./modeld"]),
+  
+  "driverview": "selfdrive.monitoring.driverview",  
   "shutdownd": "selfdrive.shutdownd",  
 }
 
