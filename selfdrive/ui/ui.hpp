@@ -32,24 +32,23 @@
 #define NET_DISCONNECTED 1
 #define NET_ERROR 2
 
-# define COLOR_BLACK nvgRGBA(0, 0, 0, 255)
-# define COLOR_BLACK_ALPHA(x) nvgRGBA(0, 0, 0, x)
-# define COLOR_WHITE nvgRGBA(255, 255, 255, 255)
-# define COLOR_WHITE_ALPHA(x) nvgRGBA(255, 255, 255, x)
-# define COLOR_OCHRE nvgRGBA(218, 111, 37, 255)
-# define COLOR_OCHRE_ALPHA(x) nvgRGBA(218, 111, 37, x)
-# define COLOR_GREEN nvgRGBA(0, 255, 0, 255)
-# define COLOR_GREEN_ALPHA(x) nvgRGBA(0, 255, 0, x)
-# define COLOR_ORANGE nvgRGBA(255, 175, 3, 255)
-# define COLOR_ORANGE_ALPHA(x) nvgRGBA(255, 175, 3, x)
-# define COLOR_RED nvgRGBA(201, 34, 49, 255)
-# define COLOR_RED_ALPHA(x) nvgRGBA(201, 34, 49, x)
-# define COLOR_YELLOW nvgRGBA(218, 202, 37, 255)
-# define COLOR_YELLOW_ALPHA(x) nvgRGBA(218, 202, 37, x)
-
-#ifndef QCOM
-  #define UI_60FPS
-#endif
+#define COLOR_BLACK nvgRGBA(0, 0, 0, 255)
+#define COLOR_BLACK_ALPHA(x) nvgRGBA(0, 0, 0, x)
+#define COLOR_WHITE nvgRGBA(255, 255, 255, 255)
+#define COLOR_WHITE_ALPHA(x) nvgRGBA(255, 255, 255, x)
+#define COLOR_OCHRE nvgRGBA(218, 111, 37, 255)
+#define COLOR_OCHRE_ALPHA(x) nvgRGBA(218, 111, 37, x)
+#define COLOR_LIME nvgRGBA(0, 255, 0, 255)
+#define COLOR_LIME_ALPHA(x) nvgRGBA(0, 255, 0, x)
+#define COLOR_ORANGE nvgRGBA(255, 165, 0, 255)
+#define COLOR_ORANGE_ALPHA(x) nvgRGBA(255, 165, 0, x)
+#define COLOR_RED nvgRGBA(255, 0, 0, 255)
+#define COLOR_RED_ALPHA(x) nvgRGBA(255, 0, 0, x)
+#define COLOR_YELLOW nvgRGBA(255, 255, 0, 255)
+#define COLOR_YELLOW_ALPHA(x) nvgRGBA(255, 255, 0, x)
+#define COLOR_DEEPSKYBLUE nvgRGBA(0, 191, 255, 255)
+#define COLOR_ENGAGED nvgRGBA(23, 134, 68, 255)
+#define COLOR_ENGAGEABLE nvgRGBA(23, 51, 73, 255)
 
 #define UI_BUF_COUNT 4
 
@@ -81,14 +80,14 @@ const int home_btn_y = vwp_h - home_btn_h - 40;
 const int UI_FREQ = 20; // Hz
 
 const int MODEL_PATH_MAX_VERTICES_CNT = 98;
-const int MODEL_LANE_PATH_CNT = 3;
+const int MODEL_LANE_PATH_CNT = 2;
 const int TRACK_POINTS_MAX_CNT = 50 * 2;
 
 const int SET_SPEED_NA = 255;
 
 const uint8_t bg_colors[][4] = {
-  [STATUS_STOPPED] = {0x07, 0x23, 0x39, 0xff},
-  [STATUS_DISENGAGED] = {0x17, 0x33, 0x49, 0xff},
+  [STATUS_STOPPED] = {0x07, 0x23, 0x39, 0x7d},
+  [STATUS_DISENGAGED] = {0x17, 0x33, 0x49, 0x7d},
   [STATUS_ENGAGED] = {0x17, 0x86, 0x44, 0x0f},
   [STATUS_WARNING] = {0xDA, 0x6F, 0x25, 0x0f},
   [STATUS_ALERT] = {0xC9, 0x22, 0x31, 0xff},
@@ -110,42 +109,31 @@ typedef struct UIScene {
   bool speedlimit_valid;
 
   bool is_rhd;
-  bool map_valid;
   bool uilayout_sidebarcollapsed;
-  bool uilayout_mapenabled;
   // responsive layout
   int ui_viz_rx;
   int ui_viz_rw;
   int ui_viz_ro;
-  
-  int lead_status;
-  float lead_d_rel, lead_y_rel, lead_v_rel;
-
-  int lead_status2;
-  float lead_d_rel2, lead_y_rel2, lead_v_rel2;
-
-  int front_box_x, front_box_y, front_box_width, front_box_height;
 
   std::string alert_text1;
   std::string alert_text2;
   std::string alert_type;
   cereal::ControlsState::AlertSize alert_size;
   // ui add
+  float maxCpuTemp;
   float angleSteers;
-  float steerRatio;
-  bool brakeLights;
   float angleSteersDes;
   bool steerOverride;
   float output_scale; 
-  float cpu0Temp;
-  int batteryPercent;
-  bool batteryCharging;
-  char batteryStatus[64];
-  // ip addr
-  char ipAddr[20];
-  
-  // Used to show gps planner status
-  bool gps_planner_active;
+  float steerRatio;
+  bool brakeLights;
+  float steeringTorqueEps;
+  float aEgo;
+  float gpsAccuracyUblox;
+  float altitudeUblox;
+    
+// Used to show gps planner status
+// bool gps_planner_active;
 
   cereal::HealthData::HwType hwType;
   int satelliteCount;
@@ -156,7 +144,7 @@ typedef struct UIScene {
   cereal::ControlsState::Reader controls_state;
   cereal::DriverState::Reader driver_state;
   cereal::DMonitoringState::Reader dmonitoring_state;
-  cereal::LiveParametersData::Reader liveParams;  
+  cereal::LiveParametersData::Reader liveParams;
 } UIScene;
 
 typedef struct {
@@ -172,7 +160,6 @@ typedef struct {
   vertex_data v[TRACK_POINTS_MAX_CNT];
   int cnt;
 } track_vertices_data;
-
 
 typedef struct UIState {
   pthread_mutex_t lock;
@@ -191,7 +178,6 @@ typedef struct UIState {
   int img_wheel;
   int img_turn;
   int img_face;
-  int img_map;
   int img_brake;
   int img_button_settings;
   int img_button_home;
@@ -238,12 +224,7 @@ typedef struct UIState {
   // timeouts
   int awake_timeout;
   int controls_timeout;
-  int speed_lim_off_timeout;
-  int is_metric_timeout;
-  int longitudinal_control_timeout;
-  int limit_set_speed_timeout;
   int hardware_timeout;
-  int last_athena_ping_timeout;
 
   bool controls_seen;
 
@@ -251,8 +232,6 @@ typedef struct UIState {
   int status;
   bool is_metric;
   bool longitudinal_control;
-  bool limit_set_speed;
-  float speed_lim_off;
   bool is_ego_over_limit;
   float alert_blinking_alpha;
   bool alert_blinked;
