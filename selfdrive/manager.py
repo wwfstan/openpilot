@@ -574,6 +574,9 @@ def main():
     ("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')),
     ("OpenpilotEnabledToggle", "1"),
     ("LaneChangeEnabled", "1"),
+    ("LongControlEnabled", "0"),
+    ("MadModeEnabled", "0"),
+    ("AutoLaneChangeEnabled", "0"),
     ("IsDriverViewEnabled", "0"),
   ]
 
