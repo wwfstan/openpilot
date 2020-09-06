@@ -574,7 +574,7 @@ def main():
     ("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')),
     ("OpenpilotEnabledToggle", "1"),
     ("LaneChangeEnabled", "1"),
-    ("IsDriverViewEnabled", "1"),
+    ("IsDriverViewEnabled", "0"),
   ]
 
   # set unset params
