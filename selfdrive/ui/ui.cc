@@ -1,4 +1,4 @@
-#include <stdio.h>
+1#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
@@ -168,8 +168,8 @@ static void ui_init(UIState *s) {
 
   pthread_mutex_init(&s->lock, NULL);
   s->sm = new SubMaster({"model", "controlsState", "uiLayoutState", "liveCalibration", "radarState", "thermal",
-                         "health", "ubloxGnss", "driverState", "dMonitoringState", "carState", "liveMpc", "liveParameters"
-  });
+                         "health", "ubloxGnss", "driverState", "dMonitoringState", "carState", "liveMpc", "liveParameters", "gpsLocationExternal"
+                        });
   s->pm = new PubMaster({"offroadLayout"});
 
   s->ipc_fd = -1;
@@ -203,14 +203,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
 
   s->scene.frontview = getenv("FRONTVIEW") != NULL;
   s->scene.fullview = getenv("FULLVIEW") != NULL;
-  s->scene.transformed_width = ui_info.transformed_width;
-  s->scene.transformed_height = ui_info.transformed_height;
-  s->scene.front_box_x = ui_info.front_box_x;
-  s->scene.front_box_y = ui_info.front_box_y;
-  s->scene.front_box_width = ui_info.front_box_width;
-  s->scene.front_box_height = ui_info.front_box_height;
   s->scene.world_objects_visible = false;  // Invisible until we receive a calibration message.
-  s->scene.gps_planner_active = false;
 
   s->rgb_width = back_bufs.width;
   s->rgb_height = back_bufs.height;
@@ -222,15 +215,7 @@ static void ui_init_vision(UIState *s, const VisionStreamBufs back_bufs,
   s->rgb_front_stride = front_bufs.stride;
   s->rgb_front_buf_len = front_bufs.buf_len;
 
-  read_param(&s->speed_lim_off, "SpeedLimitOffset");
   read_param(&s->is_metric, "IsMetric");
-  read_param(&s->longitudinal_control, "LongitudinalControl");
-  read_param(&s->limit_set_speed, "LimitSetSpeed");
-
-  // Set offsets so params don't get read at the same time
-  s->longitudinal_control_timeout = UI_FREQ / 3;
-  s->is_metric_timeout = UI_FREQ / 2;
-  s->limit_set_speed_timeout = UI_FREQ;
 }
 
 static void read_path(PathData& p, const cereal::ModelData::PathData::Reader &pathp) {
@@ -259,7 +244,7 @@ static void read_model(ModelData &d, const cereal::ModelData::Reader &model) {
   read_path(d.right_lane, model.getRightLane());
   auto leadd = model.getLead();
   d.lead = (LeadData){
-      .dist = leadd.getDist(), .prob = leadd.getProb(), .std = leadd.getStd(),
+    .dist = leadd.getDist(), .prob = leadd.getProb(), .std = leadd.getStd(),
   };
 }
 
@@ -278,10 +263,10 @@ void handle_message(UIState *s, SubMaster &sm) {
     s->controls_seen = true;
 
     s->scene.angleSteers = scene.controls_state.getAngleSteers();
-    s->scene.steerOverride= scene.controls_state.getSteerOverride();
-    s->scene.output_scale = scene.controls_state.getLateralControlState().getPidState().getOutput();
     s->scene.angleSteersDes = scene.controls_state.getAngleSteersDes();
-
+    s->scene.steerOverride = scene.controls_state.getSteerOverride();
+    s->scene.output_scale = scene.controls_state.getLateralControlState().getPidState().getOutput();
+    
     auto alert_sound = scene.controls_state.getAlertSound();
     if (scene.alert_type.compare(scene.controls_state.getAlertType()) != 0) {
       if (alert_sound == AudibleAlert::NONE) {
@@ -325,16 +310,13 @@ void handle_message(UIState *s, SubMaster &sm) {
   if (sm.updated("liveParameters")) {
     //scene.liveParams = sm["liveParameters"].getLiveParameters();
     auto data = sm["liveParameters"].getLiveParameters();    
-    s->scene.steerRatio=data.getSteerRatio();
+    scene.steerRatio = data.getSteerRatio();
   }
   
   if (sm.updated("radarState")) {
     auto data = sm["radarState"].getRadarState();
     scene.lead_data[0] = data.getLeadOne();
     scene.lead_data[1] = data.getLeadTwo();
-    s->scene.lead_v_rel = scene.lead_data[0].getVRel();
-    s->scene.lead_d_rel = scene.lead_data[0].getDRel();
-    s->scene.lead_status = scene.lead_data[0].getStatus();
   }
   if (sm.updated("liveCalibration")) {
     scene.world_objects_visible = true;
@@ -361,22 +343,20 @@ void handle_message(UIState *s, SubMaster &sm) {
     s->active_app = data.getActiveApp();
     scene.uilayout_sidebarcollapsed = data.getSidebarCollapsed();
   }
-#ifdef SHOW_SPEEDLIMIT
-  if (sm.updated("liveMapData")) {
-    scene.map_valid = sm["liveMapData"].getLiveMapData().getMapValid();
-  }
-#endif
   if (sm.updated("thermal")) {
     scene.thermal = sm["thermal"].getThermal();
     auto data = sm["thermal"].getThermal();
-    s->scene.cpu0Temp = scene.thermal.getCpu0();
-    snprintf(scene.ipAddr, sizeof(scene.ipAddr), "%s", data.getIpAddr().cStr());
+
+    scene.maxCpuTemp = (data.getCpu0() + data.getCpu1() + data.getCpu2() + data.getCpu3()) / 4;       
   }
   if (sm.updated("ubloxGnss")) {
     auto data = sm["ubloxGnss"].getUbloxGnss();
     if (data.which() == cereal::UbloxGnss::MEASUREMENT_REPORT) {
       scene.satelliteCount = data.getMeasurementReport().getNumMeas();
     }
+    auto data2 = sm["gpsLocationExternal"].getGpsLocationExternal();
+    s->scene.gpsAccuracyUblox = data2.getAccuracy();
+    s->scene.altitudeUblox = data2.getAltitude();
   }
   if (sm.updated("health")) {
     scene.hwType = sm["health"].getHealth().getHwType();
@@ -405,12 +385,6 @@ void handle_message(UIState *s, SubMaster &sm) {
       s->vision_seen = false;
       s->controls_seen = false;
       s->active_app = cereal::UiLayoutState::App::HOME;
-
-      #ifndef QCOM
-      // disconnect from visionipc on PC
-      close(s->ipc_fd);
-      s->ipc_fd = -1;
-      #endif
     }
   } else if (s->status == STATUS_STOPPED) {
     update_status(s, STATUS_DISENGAGED);
@@ -866,11 +840,8 @@ int main(int argc, char* argv[]) {
       ui_draw_vision_alert(s, s->scene.alert_size, s->status, s->scene.alert_text1.c_str(), s->scene.alert_text2.c_str());
     }
 
-    read_param_timeout(&s->is_metric, "IsMetric", &s->is_metric_timeout);
-    read_param_timeout(&s->longitudinal_control, "LongitudinalControl", &s->longitudinal_control_timeout);
-    read_param_timeout(&s->limit_set_speed, "LimitSetSpeed", &s->limit_set_speed_timeout);
-    read_param_timeout(&s->speed_lim_off, "SpeedLimitOffset", &s->limit_set_speed_timeout);
-    int param_read = read_param_timeout(&s->last_athena_ping, "LastAthenaPingTime", &s->last_athena_ping_timeout);
+  // Read params
+    int param_read = read_param(&s->last_athena_ping, "LastAthenaPingTime");
     if (param_read != -1) { // Param was updated this loop
       if (param_read != 0) { // Failed to read param
         s->scene.athenaStatus = NET_DISCONNECTED;
