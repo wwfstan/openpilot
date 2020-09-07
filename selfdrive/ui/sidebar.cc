@@ -146,7 +146,6 @@ static void ui_draw_sidebar_metric2(UIState *s, const int severity, const int y_
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     nvgTextBox(s->vg, metric_x + 35, metric_y + (strchr(message_str, '\n') ? 40 : 50), metric_w - 50, message_str, NULL);
   }
-}
 
 static void ui_draw_sidebar_temp_metric(UIState *s) {
   static std::map<cereal::ThermalData::ThermalStatus, const int> temp_severity_map = {
