@@ -1,4 +1,4 @@
-1#include <stdio.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
@@ -369,8 +369,13 @@ void handle_message(UIState *s, SubMaster &sm) {
     scene.dmonitoring_state = sm["dMonitoringState"].getDMonitoringState();
     scene.is_rhd = scene.dmonitoring_state.getIsRHD();
     scene.frontview = scene.dmonitoring_state.getIsPreview();
-    s->scene.brakeLights = data.getBrakeLights();    
   }
+  if (sm.updated("carState")) {
+    auto data = sm["carState"].getCarState();
+    s->scene.brakeLights = data.getBrakeLights();
+    s->scene.aEgo = data.getAEgo();
+    s->scene.steeringTorqueEps = data.getSteeringTorqueEps();
+  } 
 
   // timeout on frontview
   if ((sm.frame - sm.rcv_frame("dMonitoringState")) > 1*UI_FREQ) {
