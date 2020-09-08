@@ -31,9 +31,9 @@ static void ui_draw_sidebar_ipaddress(UIState *s) {
 
 static void ui_draw_sidebar_battery_icon(UIState *s) {
   const int battery_img_x = 65;
-  const int battery_img_y = 250;
+  const int battery_img_y = 245;
   const int battery_img_w = 160;
-  const int battery_img_h = 60;
+  const int battery_img_h = 65;
 
   int battery_img = s->scene.thermal.getBatteryStatus() == "Charging" ? s->img_battery_charging : s->img_battery;
 
@@ -71,7 +71,7 @@ static void ui_draw_sidebar_metric(UIState *s, const char* label_str, const char
     nvgFillColor(s->vg, COLOR_WHITE);
     nvgFontSize(s->vg, 60);
     nvgFontFaceId(s->vg, s->font_sans_bold);
-    nvgTextAlign(s->vg, NVG_ALIGN_RIGHT | NVG_ALIGN_MIDDLE);
+    nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     nvgTextBox(s->vg, metric_x + 50, metric_y + 50, metric_w - 60, value_str, NULL);
 
     nvgFillColor(s->vg, COLOR_WHITE);
