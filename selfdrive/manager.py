@@ -557,13 +557,13 @@ def main():
   params.manager_start()
 
   default_params = [
-    ("CommunityFeaturesToggle", "0"),
-    ("CompletedTrainingVersion", "0"),
+    ("CommunityFeaturesToggle", "1"),
+    ("CompletedTrainingVersion", "1"),
     ("IsRHD", "0"),
-    ("IsMetric", "0"),
+    ("IsMetric", "1"),
     ("RecordFront", "0"),
-    ("HasAcceptedTerms", "0"),
-    ("HasCompletedSetup", "0"),
+    ("HasAcceptedTerms", "1"),
+    ("HasCompletedSetup", "1"),
     ("IsUploadRawEnabled", "1"),
     ("IsLdwEnabled", "1"),
     ("IsGeofenceEnabled", "-1"),
@@ -575,7 +575,7 @@ def main():
     ("OpenpilotEnabledToggle", "1"),
     ("LaneChangeEnabled", "1"),
     ("LongControlEnabled", "0"),
-    ("MadModeEnabled", "0"),
+    ("MadModeEnabled", "1"),
     ("AutoLaneChangeEnabled", "0"),
     ("IsDriverViewEnabled", "0"),
   ]
