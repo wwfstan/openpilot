@@ -29,8 +29,8 @@ static void ui_draw_sidebar_ipaddress(UIState *s) {
 }
 
 static void ui_draw_sidebar_battery_icon(UIState *s) {
-  const int battery_img_h = 50;
-  const int battery_img_w = 150;
+  const int battery_img_h = 60;
+  const int battery_img_w = 160;
   const int battery_img_x = 65;
   const int battery_img_y = 255;
 
@@ -41,25 +41,6 @@ static void ui_draw_sidebar_battery_icon(UIState *s) {
 
   ui_draw_image(s->vg, battery_img_x, battery_img_y, battery_img_w, battery_img_h, battery_img, 1.0f);
 }
-
-//static void ui_draw_sidebar_network_type(UIState *s) {
-//  static std::map<cereal::ThermalData::NetworkType, const char *> network_type_map = {
-//      {cereal::ThermalData::NetworkType::NONE, "--"},
-//      {cereal::ThermalData::NetworkType::WIFI, "WiFi"},
-//      {cereal::ThermalData::NetworkType::CELL2_G, "2G"},
-//      {cereal::ThermalData::NetworkType::CELL3_G, "3G"},
-//      {cereal::ThermalData::NetworkType::CELL4_G, "4G"},
-//      {cereal::ThermalData::NetworkType::CELL5_G, "5G"}};
-//  const int network_x = 50;
-//  const int network_y = 273;
-//  const int network_w = 100;
-//  const char *network_type = network_type_map[s->scene.thermal.getNetworkType()];
-//  nvgFillColor(s->vg, COLOR_WHITE);
-//  nvgFontSize(s->vg, 30);
-//  nvgFontFaceId(s->vg, s->font_sans_regular);
-//  nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
-//  nvgTextBox(s->vg, network_x, network_y, network_w, network_type ? network_type : "--", NULL);
-//}
 
 static void ui_draw_sidebar_metric(UIState *s, const char* label_str, const char* value_str, const int severity, const int y_offset, const char* message_str) {
   const int metric_x = 30;
@@ -169,7 +150,6 @@ void ui_draw_sidebar(UIState *s) {
   ui_draw_sidebar_home_button(s);
   ui_draw_sidebar_ipaddress(s);
   ui_draw_sidebar_battery_icon(s);
-  //ui_draw_sidebar_network_type(s);
   ui_draw_sidebar_temp_metric(s);
   ui_draw_sidebar_panda_metric(s);
   ui_draw_sidebar_connectivity(s);
