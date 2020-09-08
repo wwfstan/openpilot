@@ -93,9 +93,9 @@ static void ui_draw_sidebar_temp_metric(UIState *s) {
       {cereal::ThermalData::ThermalStatus::YELLOW, 1},
       {cereal::ThermalData::ThermalStatus::RED, 2},
       {cereal::ThermalData::ThermalStatus::DANGER, 3}};
-  char temp_label_str[30];
-  char temp_value_str[30];
-  char temp_value_unit[30];
+  char temp_label_str[28];
+  char temp_value_str[28];
+  char temp_value_unit[28];
   const int temp_y_offset = 0;
   snprintf(temp_value_str, sizeof(temp_value_str), "%d", s->scene.thermal.getPa0());
   snprintf(temp_value_unit, sizeof(temp_value_unit), "%s", "°C");
@@ -112,19 +112,19 @@ static void ui_draw_sidebar_panda_metric(UIState *s) {
 
   if (s->scene.hwType == cereal::HealthData::HwType::UNKNOWN) {
     panda_severity = 2;
-    snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\n연결안됨");
+    snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\n오프라인");
   } else {
     if (s->started){
       if (s->scene.satelliteCount < 6) {
         panda_severity = 1;
-        snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\nGPS 없음");
+        snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\nNO GPS");
       } else if (s->scene.satelliteCount >= 6) {
         panda_severity = 0;
-        snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\nGPS 연결됨");
+        snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\nGOOD GPS");
       }
     } else {
       panda_severity = 0;
-      snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\n연결됨");
+      snprintf(panda_message_str, sizeof(panda_message_str), "%s", "판다\n온라인");
     }
   }
 
