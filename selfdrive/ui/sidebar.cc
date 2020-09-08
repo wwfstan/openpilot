@@ -20,8 +20,8 @@ static void ui_draw_sidebar_home_button(UIState *s) {
 }
 
 static void ui_draw_sidebar_ipaddress(UIState *s) {
-  const int ipaddress_x = 58;
-  const int ipaddress_y = 186;
+  const int ipaddress_x = 50;
+  const int ipaddress_y = 200;
   nvgFillColor(s->vg, COLOR_LIME);
   nvgFontSize(s->vg, 35);
   nvgFontFaceId(s->vg, s->font_sans_bold);
@@ -29,10 +29,10 @@ static void ui_draw_sidebar_ipaddress(UIState *s) {
 }
 
 static void ui_draw_sidebar_battery_icon(UIState *s) {
-  const int battery_img_h = 40;
+  const int battery_img_h = 50;
   const int battery_img_w = 150;
-  const int battery_img_x = 60;
-  const int battery_img_y = 155;
+  const int battery_img_x = 65;
+  const int battery_img_y = 255;
 
   int battery_img = s->scene.thermal.getBatteryStatus() == "Charging" ? s->img_battery_charging : s->img_battery;
 
