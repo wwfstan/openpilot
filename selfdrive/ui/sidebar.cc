@@ -21,12 +21,12 @@ static void ui_draw_sidebar_home_button(UIState *s) {
 
 static void ui_draw_sidebar_ipaddress(UIState *s) {
   const int ipaddress_x = 50;
-  const int ipaddress_y = 200;
+  const int ipaddress_y = 210;
   const int ipaddress_w = 250;
   nvgFillColor(s->vg, COLOR_LIME);
   nvgFontSize(s->vg, 35);
   nvgFontFaceId(s->vg, s->font_sans_bold);
-  nvgTextBox(s->vg, ipaddress_x, ipaddress_y + 5, ipaddress_w, s->scene.thermal.getWifiIpAddress().cStr(), NULL);
+  nvgTextBox(s->vg, ipaddress_x, ipaddress_y, ipaddress_w, s->scene.thermal.getWifiIpAddress().cStr(), NULL);
 }
 
 static void ui_draw_sidebar_battery_icon(UIState *s) {
@@ -69,19 +69,19 @@ static void ui_draw_sidebar_metric(UIState *s, const char* label_str, const char
 
   if (!message_str) {
     nvgFillColor(s->vg, COLOR_WHITE);
-    nvgFontSize(s->vg, 78*0.8);
+    nvgFontSize(s->vg, 60);
     nvgFontFaceId(s->vg, s->font_sans_bold);
     nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
     nvgTextBox(s->vg, metric_x + 50, metric_y + 50, metric_w - 60, value_str, NULL);
 
     nvgFillColor(s->vg, COLOR_WHITE);
-    nvgFontSize(s->vg, 48*0.8);
-    nvgFontFaceId(s->vg, s->font_sans_regular);
+    nvgFontSize(s->vg, 38);
+    nvgFontFaceId(s->vg, s->font_sans_bold);
     nvgTextAlign(s->vg, NVG_ALIGN_LEFT | NVG_ALIGN_MIDDLE);
     nvgTextBox(s->vg, metric_x + 50, metric_y + 50 + 66, metric_w - 60, label_str, NULL);
   } else {
     nvgFillColor(s->vg, COLOR_WHITE);
-    nvgFontSize(s->vg, 48*0.8);
+    nvgFontSize(s->vg, 38);
     nvgFontFaceId(s->vg, s->font_sans_bold);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     nvgTextBox(s->vg, metric_x + 35, metric_y + (strchr(message_str, '\n') ? 40 : 50), metric_w - 50, message_str, NULL);
@@ -94,9 +94,9 @@ static void ui_draw_sidebar_temp_metric(UIState *s) {
       {cereal::ThermalData::ThermalStatus::YELLOW, 1},
       {cereal::ThermalData::ThermalStatus::RED, 2},
       {cereal::ThermalData::ThermalStatus::DANGER, 3}};
-  char temp_label_str[28];
-  char temp_value_str[28];
-  char temp_value_unit[28];
+  char temp_label_str[32];
+  char temp_value_str[32];
+  char temp_value_unit[32];
   const int temp_y_offset = 0;
   snprintf(temp_value_str, sizeof(temp_value_str), "%d", s->scene.thermal.getPa0());
   snprintf(temp_value_unit, sizeof(temp_value_unit), "%s", "°C");
