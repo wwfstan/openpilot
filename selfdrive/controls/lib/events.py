@@ -475,7 +475,7 @@ EVENTS = {
       "차선을 변경합니다",
       "측후방 차량에 주의하세요",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1),
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeAlca, 4., .1, .1),
   },
 
   EventName.steerSaturated: {
