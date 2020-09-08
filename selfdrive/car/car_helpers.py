@@ -115,6 +115,7 @@ def fingerprint(logcan, sendcan, has_relay):
 
   finger = gen_empty_fingerprint()
   candidate_cars = {i: all_known_cars() for i in [0]}  # attempt fingerprint on bus 0 only
+#  candidate_cars = {i: all_known_cars() for i in [0, 1]}  # attempt fingerprint on bus 0, 1 
   frame = 0
   frame_fingerprint = 10  # 0.1s
   car_fingerprint = None
@@ -146,6 +147,8 @@ def fingerprint(logcan, sendcan, has_relay):
         if frame > frame_fingerprint:
           # fingerprint done
           car_fingerprint = candidate_cars[b][0]
+      elif len(candidate_cars[b]) < 4:
+        print(candidate_cars[b])
 
     # bail if no cars left or we've been waiting for more than 2s
     failed = all(len(cc) == 0 for cc in candidate_cars.values()) or frame > 200
