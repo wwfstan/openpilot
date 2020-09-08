@@ -56,7 +56,8 @@ class PathPlanner():
     self.setup_mpc()
     self.solution_invalid_cnt = 0
     self.lane_change_enabled = Params().get('LaneChangeEnabled') == b'1'
-    self.auto_lane_change_enabled = Params().get('AutoLaneChangeEnabled') == b'1'
+    #self.auto_lane_change_enabled = Params().get('AutoLaneChangeEnabled') == b'1'
+    self.auto_lane_change_enabled = False
     self.lane_change_state = LaneChangeState.off
     self.lane_change_direction = LaneChangeDirection.none
     self.lane_change_timer = 0.0
