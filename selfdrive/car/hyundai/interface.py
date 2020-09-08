@@ -15,8 +15,8 @@ class CarInterface(CarInterfaceBase):
   def __init__(self, CP, CarController, CarState):
     super().__init__(CP, CarController, CarState)
     self.cp2 = self.CS.get_can2_parser(CP)
-#    self.mad_mode_enabled = Params().get('MadModeEnabled') == b'1' # only for non-SCC cars
-    self.mad_mode_enabled = True
+    self.mad_mode_enabled = Params().get('MadModeEnabled') == b'1' # only for non-SCC cars
+#    self.mad_mode_enabled = True
     self.lkas_button_alert = False
 
   @staticmethod
@@ -185,8 +185,8 @@ class CarInterface(CarInterfaceBase):
     ret.sccBus = 0 if 1056 in fingerprint[0] else 1 if 1056 in fingerprint[1] and 1296 not in fingerprint[1] \
                                                                      else 2 if 1056 in fingerprint[2] else -1
     ret.radarOffCan = ret.sccBus == -1
-    #ret.openpilotLongitudinalControl = Params().get('LongControlEnabled') == b'1'
-    ret.openpilotLongitudinalControl = False
+    ret.openpilotLongitudinalControl = Params().get('LongControlEnabled') == b'1'
+#    ret.openpilotLongitudinalControl = False
     ret.enableCruise = not ret.radarOffCan
     ret.spasEnabled = False
 
