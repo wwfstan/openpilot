@@ -24,7 +24,7 @@ static void ui_draw_sidebar_ipaddress(UIState *s) {
   const int ipaddress_y = 196;
   nvgFillColor(s->vg, COLOR_LIME);
   nvgFontSize(s->vg, 30);
-  nvgTextBox(s->vg, ipaddress_x-20, ipaddress_y + 55, 250, s->scene.thermal.getWifiIpAddress().cStr(), NULL);
+  nvgTextBox(s->vg, ipaddress_x, ipaddress_y, 250, s->scene.thermal.getWifiIpAddress().cStr(), NULL);
 }
 
 static void ui_draw_sidebar_battery_icon(UIState *s) {
