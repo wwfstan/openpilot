@@ -26,14 +26,14 @@ static void ui_draw_sidebar_ipaddress(UIState *s) {
   nvgFillColor(s->vg, COLOR_LIME);
   nvgFontSize(s->vg, 35);
   nvgFontFaceId(s->vg, s->font_sans_bold);
-  nvgTextBox(s->vg, ipaddress_x, ipaddress_y, ipaddress_w, s->scene.thermal.getWifiIpAddress().cStr(), NULL);
+  nvgTextBox(s->vg, ipaddress_x, ipaddress_y + 5, ipaddress_w, s->scene.thermal.getWifiIpAddress().cStr(), NULL);
 }
 
 static void ui_draw_sidebar_battery_icon(UIState *s) {
-  const int battery_img_h = 60;
-  const int battery_img_w = 160;
   const int battery_img_x = 65;
   const int battery_img_y = 250;
+  const int battery_img_w = 160;
+  const int battery_img_h = 60;
 
   int battery_img = s->scene.thermal.getBatteryStatus() == "Charging" ? s->img_battery_charging : s->img_battery;
 
