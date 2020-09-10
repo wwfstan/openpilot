@@ -192,7 +192,7 @@ def calibration_incomplete_alert(CP, sm, metric):
     "캘리브레이션 진행중입니다 : %d%%" % sm['liveCalibration'].calPerc,
     "기준속도 %d %s 이상으로 주행해주세요" % (speed, unit),
     AlertStatus.normal, AlertSize.mid,
-    Priority.LOWEST, VisualAlert.none, AudibleAlert.chimeCalibration1, 5., 0., .2)
+    Priority.LOWEST, VisualAlert.none, AudibleAlert.chimeCalibration1, 4.5, 0., .2)
 
 def no_gps_alert(CP, sm, metric):
   gps_integrated = sm['health'].hwType in [log.HealthData.HwType.uno, log.HealthData.HwType.dos]
@@ -632,7 +632,7 @@ EVENTS = {
     ET.SOFT_DISABLE: SoftDisableAlert("캘리브레이션 진행중입니다"),
     ET.PERMANENT: calibration_incomplete_alert,
     ET.NO_ENTRY: NoEntryAlert("캘리브레이션 진행중입니다",
-                              audible_alert=AudibleAlert.chimeCalibration2, duration_sound=3.),
+                              audible_alert=AudibleAlert.chimeCalibration2, duration_sound=2.),
   },
 
   EventName.doorOpen: {
