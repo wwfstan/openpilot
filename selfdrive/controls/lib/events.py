@@ -467,7 +467,7 @@ EVENTS = {
       "후측방 차량감지",
       "차선에 차량이 감지되니 대기하세요",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .0, .1, .1),
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning2Repeat, 2.2, .1, .1),
   },
 
   EventName.laneChange: {
