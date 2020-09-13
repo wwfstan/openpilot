@@ -9,5 +9,7 @@ mount -o rw,remount /system
 cp ./bootanimation.zip /system/media/
 
 echo =================================================================
-echo complete !
+echo logo and bootanimation change complete !
+echo now reboot eon
+sudo reboot
 echo =================================================================
