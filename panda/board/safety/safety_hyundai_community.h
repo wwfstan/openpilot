@@ -9,26 +9,28 @@ int hyundai_mdps_bus = -1;
 bool hyundai_LCAN_on_bus1 = false;
 bool hyundai_forward_bus1 = false;
 const CanMsg HYUNDAI_COMMUNITY_TX_MSGS[] = {
-  {832, 0, 8}, {832, 1, 8}, // LKAS11 Bus 0, 1
+  {593, 2, 8},                              // MDPS12, Bus 2
+  {790, 1, 8},                              // EMS11, Bus 1
+  {832, 0, 8}, {832, 1, 8},                 // LKAS11 Bus 0, 1
+  {905, 0, 8},                              // SCC14,  Bus 0
+  {912, 0, 7}, {912,1, 7},                  // SPAS11, Bus 0, 1
+  {1056, 0, 8},                             // SCC11,  Bus 0
+  {1057, 0, 8},                             // SCC12,  Bus 0
+  {1157, 0, 4},                             // LFAHDA_MFC Bus 0
+  {1186, 0, 8},                             // FRT_RADAR11, Bus 0
   {1265, 0, 4}, {1265, 1, 4}, {1265, 2, 4}, // CLU11 Bus 0, 1, 2
-  {1157, 0, 4}, // LFAHDA_MFC Bus 0
-  {593, 2, 8},  // MDPS12, Bus 2
-  {1056, 0, 8}, //   SCC11,  Bus 0
-  {1057, 0, 8}, //   SCC12,  Bus 0
-  {1290, 0, 8}, //   SCC13,  Bus 0
-  {905, 0, 8},  //   SCC14,  Bus 0
-  {1186, 0, 8},  //   4a2SCC, Bus 0
-  {790, 1, 8}, // EMS11, Bus 1
-  {912, 0, 7}, {912,1, 7}, // SPAS11, Bus 0, 1
-  {1268, 0, 8}, {1268,1, 8}, // SPAS12, Bus 0, 1
+  {1268, 0, 8}, {1268,1, 8},                // SPAS12, Bus 0, 1
+  {1290, 0, 8},                             // SCC13,  Bus 0
  };
 
 // older hyundai models have less checks due to missing counters and checksums
 AddrCheckStruct hyundai_community_rx_checks[] = {
-  {.msg = {{608, 0, 8, .check_checksum = true, .max_counter = 3U, .expected_timestep = 10000U},
-           {881, 0, 8, .expected_timestep = 10000U}}},
-  {.msg = {{902, 0, 8, .expected_timestep = 20000U}}},
-  // {.msg = {{916, 0, 8, .expected_timestep = 20000U}}}, some Santa Fe does not have this msg, need to find alternative
+  {.msg = {{608, 0, 8, .check_checksum = true, .max_counter = 3U, .expected_timestep = 10000U},     // EMS16
+           {881, 0, 8, .expected_timestep = 10000U}}},                                              // E_EMS11
+  {.msg = {{902, 0, 8, .expected_timestep = 20000U}}},                                              // WHL_SPD11
+  // some Santa Fe does not have this msg, need to find alternative
+  // {.msg = {{916, 0, 8, .expected_timestep = 20000U}}},                                           // TCS13
+  // {.msg = {{1057, 0, 8, .check_checksum = true, .max_counter = 15U, .expected_timestep = 20000U}}}, // SCC12
 };
 const int HYUNDAI_COMMUNITY_RX_CHECK_LEN = sizeof(hyundai_community_rx_checks) / sizeof(hyundai_community_rx_checks[0]);
 
@@ -319,4 +321,3 @@ const safety_hooks hyundai_community_hooks = {
   .addr_check = hyundai_community_rx_checks,
   .addr_check_len = sizeof(hyundai_community_rx_checks) / sizeof(hyundai_community_rx_checks[0]),
 };
-
