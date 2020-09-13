@@ -565,7 +565,7 @@ EVENTS = {
       "핸들을 잡아주세요",
       "카메라 포커스상태를 점검하세요",
       AlertStatus.userPrompt, AlertSize.mid,
-      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, .4, 2., 3.),
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.chimeWarning1, .4, 2., 3., creation_delay=3.1),
   },
 
   EventName.outOfSpace: {
