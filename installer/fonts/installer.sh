@@ -73,15 +73,3 @@ setprop persist.sys.local $lang
 echo =================================================================
 echo kor nanumgothic font install complete !
 echo =================================================================
-echo comma boot logo & bootanimation change
-echo =================================================================
-echo = eon by op3t
-echo dd if=./logo.bin of=/dev/block/bootdevice/by-name/LOGO
-echo mount -o rw,remount /system
-echo cp ./bootanimation.zip /system/media/
-echo =================================================================
-echo = eon by lepro3
-echo dd if=./splash.img of=/dev/block/bootdevice/by-name/splash
-echo mount -o rw,remount /system
-echo cp ./bootanimation.zip /system/media/
-echo =================================================================
