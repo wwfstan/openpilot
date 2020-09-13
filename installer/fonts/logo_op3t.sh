@@ -11,5 +11,4 @@ cp ./bootanimation.zip /system/media/
 echo =================================================================
 echo logo and bootanimation change complete !
 echo now reboot eon
-sudo reboot
-echo =================================================================
+reboot
