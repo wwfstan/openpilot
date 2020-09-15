@@ -423,7 +423,7 @@ EVENTS = {
       "운전자 모니터링 확인",
       "운전자 모니터링 상태가 비정상입니다",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .4, 0., 1.),
+      Priority.LOW, VisualAlert.steerRequired, AudibleAlert.none, .4, 0., 2.),
   },
 
   EventName.manualRestart: {
