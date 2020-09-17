@@ -589,12 +589,12 @@ class CarState(CarStateBase):
     rightBlinker = cp.vl["CGW1"]['CF_Gway_TurnSigRh'] != 0
 
     if leftBlinker:
-      self.left_blinker_flash = 300
+      self.left_blinker_flash = 250
     elif self.left_blinker_flash:
       self.left_blinker_flash -= 1
 
     if rightBlinker:
-      self.right_blinker_flash = 300
+      self.right_blinker_flash = 250
     elif self.right_blinker_flash:
       self.right_blinker_flash -= 1
 
@@ -608,12 +608,12 @@ class CarState(CarStateBase):
     rightBlindspot = cp.vl["LCA11"]["CF_Lca_IndRight"] != 0
 
     if leftBlindspot != 0:
-      self.leftBlindspot_time = 200
+      self.leftBlindspot_time = 150
     elif self.leftBlindspot_time:
       self.leftBlindspot_time -=  1
 
     if rightBlindspot != 0:
-      self.rightBlindspot_time = 200
+      self.rightBlindspot_time = 150
     elif self.rightBlindspot_time:
       self.rightBlindspot_time -= 1
 
