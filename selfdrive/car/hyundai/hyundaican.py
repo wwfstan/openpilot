@@ -67,7 +67,8 @@ def create_clu11(packer, frame, bus, clu11, button, speed):
   values = clu11
   values["CF_Clu_CruiseSwState"] = button
   values["CF_Clu_Vanz"] = speed
-  values["CF_Clu_AliveCnt1"] = frame // 2 % 0x10
+#  values["CF_Clu_AliveCnt1"] = frame // 2 % 0x10
+  values["CF_Clu_AliveCnt1"] = frame % 0x10  
   return packer.make_can_msg("CLU11", bus, values)
 
 def create_lfa_mfa(packer, frame, enabled):
@@ -163,7 +164,7 @@ def create_spas11(packer, car_fingerprint, frame, en_spas, apply_steer, bus):
   return packer.make_can_msg("SPAS11", bus, values)
 
 def create_spas12(bus):
-  return [1268, 0, "\x00\x00\x00\x00\x00\x00\x00\x00", bus]
+  return [1268, 0, b"\x00\x00\x00\x00\x00\x00\x00\x00", bus]
 
 def create_ems11(packer, ems11, enabled):
   values = ems11
