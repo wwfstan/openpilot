@@ -40,8 +40,7 @@ def create_lkas11(packer, frame, car_fingerprint, apply_steer, steer_req,
 
   # genesis ldws
 #  elif car_fingerprint == CAR.HYUNDAI_GENESIS:
-    #values["CF_Lkas_Bca_R"] = 2
-#    values["CF_Lkas_Bca_R"] = int(left_lane) + (int(right_lane) << 1)
+#    values["CF_Lkas_Bca_R"] = 2
        
   # k7 ldws
 #  elif car_fingerprint in [CAR.CARDENZA, CAR.CARDENZA_HEV, CAR.OPTIMA, CAR.OPTIMA_HEV]:
