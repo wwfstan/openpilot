@@ -86,8 +86,8 @@ class CarInterface(CarInterfaceBase):
         ret.mass = 1685. + STD_CARGO_KG
         ret.wheelbase = 2.7
         ret.steerRatio = 13.73
-    elif candidate in [CAR.IONIQ, CAR.IONIQ_EV_LTD]:
-        ret.mass = 1490. + STD_CARGO_KG  # weight per hyundai site https://www.hyundaiusa.com/ioniq-electric/specifications.aspx
+    elif candidate in [CAR.IONIQ_EV, CAR.IONIQ_HEV]:
+        ret.mass = 1490. + STD_CARGO_KG
         ret.wheelbase = 2.7
         ret.steerRatio = 13.73  # Spec
     elif candidate in [CAR.GRANDEUR, CAR.GRANDEUR_HEV]:
