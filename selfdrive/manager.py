@@ -223,7 +223,7 @@ if ANDROID:
   persistent_processes += [
     'logcatd',
     'tombstoned',
-    'updated',
+#    'updated',
     'deleter',
     'shutdownd',
   ]
@@ -578,7 +578,6 @@ def main():
     ("MadModeEnabled", "1"),
     ("AutoLaneChangeEnabled", "0"),
     ("IsDriverViewEnabled", "0"),
-    ("CameraOffsetAdj", "6"),
     ("PutPrebuiltOn", "0"),
   ]
 
