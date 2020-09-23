@@ -351,7 +351,7 @@ EVENTS = {
       "가속패달사용시 오픈파일럿은 브레이크를 사용하지않습니다",
       "",
       AlertStatus.normal, AlertSize.small,
-      Priority.LOWEST, VisualAlert.none, AudibleAlert.none, .0, .0, .1),
+      Priority.LOWEST, VisualAlert.none, AudibleAlert.none, .0, .0, .1, creation_delay=1.),
   },
 
   EventName.vehicleModelInvalid: {
