@@ -32,6 +32,7 @@ DISCONNECT_TIMEOUT = 5.  # wait 5 seconds before going offroad after disconnect 
 LEON = False
 last_eon_fan_val = None
 
+prebuiltfile = '/data/openpilot/prebuilt'
 
 def read_tz(x, clip=True):
   if not ANDROID:
