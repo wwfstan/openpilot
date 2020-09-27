@@ -32,7 +32,7 @@ DISCONNECT_TIMEOUT = 5.  # wait 5 seconds before going offroad after disconnect 
 LEON = False
 last_eon_fan_val = None
 
-prebuiltfile = '/data/openpilot/prebuilt'
+#prebuiltfile = '/data/openpilot/prebuilt'
 
 def read_tz(x, clip=True):
   if not ANDROID:
@@ -170,7 +170,7 @@ def thermald_thread():
 
   network_type = NetworkType.none
   network_strength = NetworkStrength.unknown
-  wifiIpAddress = 'Wifi 오프라인'
+  wifiIpAddress = '--'
 
   current_filter = FirstOrderFilter(0., CURRENT_TAU, DT_TRML)
   cpu_temp_filter = FirstOrderFilter(0., CPU_TEMP_TAU, DT_TRML)
@@ -413,11 +413,11 @@ def thermald_thread():
          started_seen and (sec_since_boot() - off_ts) > 60:
         os.system('LD_LIBRARY_PATH="" svc power shutdown')
 
-    prebuiltlet = Params().get('PutPrebuiltOn') == b'1'
-    if not os.path.isfile(prebuiltfile) and prebuiltlet:
-      os.system("cd /data/openpilot; touch prebuilt")
-    elif os.path.isfile(prebuiltfile) and not prebuiltlet:
-      os.system("cd /data/openpilot; rm -f prebuilt")        
+#    prebuiltlet = Params().get('PutPrebuiltOn') == b'1'
+#    if not os.path.isfile(prebuiltfile) and prebuiltlet:
+#      os.system("cd /data/openpilot; touch prebuilt")
+#    elif os.path.isfile(prebuiltfile) and not prebuiltlet:
+#      os.system("cd /data/openpilot; rm -f prebuilt")        
         
     # Offroad power monitoring
     pm.calculate(health)
