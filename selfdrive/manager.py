@@ -578,7 +578,7 @@ def main():
     ("MadModeEnabled", "1"),
     ("AutoLaneChangeEnabled", "0"),
     ("IsDriverViewEnabled", "0"),
-    ("PutPrebuiltOn", "0"),
+#    ("PutPrebuiltOn", "0"),
   ]
 
   # set unset params
