@@ -291,6 +291,7 @@ struct ThermalData {
   offroadPowerUsage @23 :UInt32;  # Power usage since going offroad in uWh
   networkStrength @24 :NetworkStrength;
   carBatteryCapacity @25 :UInt32;  # Estimated remaining car battery capacity in uWh
+  wifiIpAddress @26 :Text;  
 
   fanSpeed @10 :UInt16;
   started @11 :Bool;
