@@ -579,6 +579,7 @@ def main():
     ("OpenpilotEnabledToggle", "1"),
     ("LaneChangeEnabled", "1"),
     ("LongControlEnabled", "0"),    
+    ("RadarDisableEnable", "0"),    
     ("IsDriverViewEnabled", "0"),
   ]
 
