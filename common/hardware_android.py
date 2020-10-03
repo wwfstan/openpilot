@@ -118,8 +118,8 @@ class Android(HardwareBase):
     }
 
   def get_ip_address(self):
-    if not ANDROID:
-      return None
+    #if not ANDROID:
+    #  return None
 
     try:
      wlan = subprocess.check_output(["ifconfig", "wlan0"], encoding='utf8').strip()
