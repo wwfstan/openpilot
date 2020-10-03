@@ -175,7 +175,6 @@ class CarInterface(CarInterfaceBase):
 
     # these cars require a special panda safety mode due to missing counters and checksums in the messages
 
-    #ret.mdpsHarness = False if 593 in fingerprint[0] else True
     ret.mdpsHarness = Params().get('MdpsHarnessEnabled') == b'1'
     ret.sasBus = 0 if 688 in fingerprint[0] else 1
     ret.fcaBus = 0 if 909 in fingerprint[0] else 2 if 909 in fingerprint[2] else -1
@@ -185,7 +184,6 @@ class CarInterface(CarInterfaceBase):
     ret.evgearAvailable = True if 882 in fingerprint[0] else False
     ret.emsAvailable = True if 608 and 809 in fingerprint[0] else False
   
-    #ret.sccBus = 0 if 1057 in fingerprint[0] else 2 if 1057 in fingerprint[2] else -1
     if Params().get('SccEnabled') == b'1':
       ret.sccBus = 2 if 1057 in fingerprint[2] else 0
     else:
@@ -194,8 +192,8 @@ class CarInterface(CarInterfaceBase):
     ret.radarOffCan = (ret.sccBus == -1)
     ret.radarTimeStep = 0.02
 
-    ret.openpilotLongitudinalControl = not (ret.sccBus == 0)
-
+    ret.openpilotLongitudinalControl = Params().get('LongControlEnabled') == b'1' and not (ret.sccBus == 0)
+   
     if candidate in [ CAR.HYUNDAI_GENESIS, CAR.IONIQ_EV_LTD, CAR.IONIQ_HEV, CAR.KONA_EV, CAR.KIA_NIRO_EV, CAR.KIA_SORENTO, CAR.SONATA_2019,
                       CAR.KIA_OPTIMA, CAR.VELOSTER, CAR.KIA_STINGER, CAR.GENESIS_G70, CAR.SONATA_HEV, CAR.SANTA_FE, CAR.GENESIS_G80,
                       CAR.GENESIS_G90]:
@@ -226,12 +224,10 @@ class CarInterface(CarInterfaceBase):
     ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) or has_relay
 
     params = Params()
-    #ret.radarDisablePossible = params.get("IsLdwEnabled", encoding='utf8') == "0"
-    #ret.radarDisablePossible = params.get("RadarDisableEnable", encoding='utf8') == "1"
     ret.radarDisablePossible = Params().get('RadarDisableEnabled') == b'1'
 
     if ret.radarDisablePossible:
-      ret.openpilotLongitudinalControl = Params().get('LongControlEnabled') == b'1'
+      ret.openpilotLongitudinalControl = True
       ret.safetyModel = car.CarParams.SafetyModel.hyundaiCommunityNonscc # todo based on toggle
       ret.sccBus = -1
       ret.radarOffCan = True
