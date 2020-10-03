@@ -84,7 +84,7 @@ keys = {
   "OpenpilotEnabledToggle": [TxType.PERSISTENT],
   "LaneChangeEnabled": [TxType.PERSISTENT],
   "LongControlEnabled": [TxType.PERSISTENT],
-  "RadarDisableEnable": [TxType.PERSISTENT],
+  "RadarDisableEnabled": [TxType.PERSISTENT],
   "PandaFirmware": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
   "PandaFirmwareHex": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
   "PandaDongleId": [TxType.CLEAR_ON_MANAGER_START, TxType.CLEAR_ON_PANDA_DISCONNECT],
