@@ -185,7 +185,12 @@ class CarInterface(CarInterfaceBase):
     ret.evgearAvailable = True if 882 in fingerprint[0] else False
     ret.emsAvailable = True if 608 and 809 in fingerprint[0] else False
   
-    ret.sccBus = 0 if 1057 in fingerprint[0] else 2 if 1057 in fingerprint[2] else -1
+    #ret.sccBus = 0 if 1057 in fingerprint[0] else 2 if 1057 in fingerprint[2] else -1
+    if Params().get('SccEnabled') == b'1':
+      ret.sccBus = 2 if 1057 in fingerprint[2] else 0
+    else:
+      ret.sccBus = -1
+      
     ret.radarOffCan = (ret.sccBus == -1)
     ret.radarTimeStep = 0.02
 
