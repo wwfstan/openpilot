@@ -580,7 +580,8 @@ def main():
     ("LaneChangeEnabled", "1"),
     ("LongControlEnabled", "0"),
     ("RadarDisableEnabled", "0"),
-    ("MdpsHarnessEnabled", "0"),    
+    ("MdpsHarnessEnabled", "0"),
+    ("SccEnabled", "0"),   
     ("IsDriverViewEnabled", "0"),
   ]
 
