@@ -291,7 +291,6 @@ struct ThermalData {
   offroadPowerUsage @23 :UInt32;  # Power usage since going offroad in uWh
   networkStrength @24 :NetworkStrength;
   carBatteryCapacity @25 :UInt32;  # Estimated remaining car battery capacity in uWh
-  wifiIpAddress @26 :Text;  
 
   fanSpeed @10 :UInt16;
   started @11 :Bool;
@@ -310,6 +309,8 @@ struct ThermalData {
   bat @29 :Float32;
   ambient @30 :Float32;
 
+  wifiIpAddress @31 :Text;  
+  
   enum ThermalStatus {
     green @0;   # all processes run
     yellow @1;  # critical processes run (kill uploader), engage still allowed
