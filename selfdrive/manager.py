@@ -586,7 +586,12 @@ def main():
     ("LongControlEnabled", "0"),
     ("RadarDisableEnabled", "0"),
     ("MdpsHarnessEnabled", "0"),
+<<<<<<< HEAD
     ("SccEnabled", "0"),   
+=======
+    ("SccEnabled", "1"),
+    ("EnableOPwithCC", "1"),
+>>>>>>> xps/Xps_Community_Release
     ("IsDriverViewEnabled", "0"),
   ]
 
