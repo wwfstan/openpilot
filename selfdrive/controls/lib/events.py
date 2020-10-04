@@ -234,7 +234,7 @@ EVENTS = {
       "오픈파일럿 사용준비 완료",
       "항상 핸들을 잡고 도로를 주시하세요",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOWER, VisualAlert.none, AudibleAlert.chimeEngage2, 1., 0., 5.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.chimeEngage2, 1., 0., 10.),
   },
 
   EventName.startupWhitePanda: {
@@ -250,7 +250,7 @@ EVENTS = {
       "오픈파일럿 사용준비 완료",
       "항상 핸들을 잡고 도로를 주시하세요",
       AlertStatus.normal, AlertSize.mid,
-      Priority.LOWER, VisualAlert.none, AudibleAlert.chimeEngage2, 1., 0., 5.),
+      Priority.LOWER, VisualAlert.none, AudibleAlert.chimeEngage2, 1., 0., 10.),
   },
 
   EventName.startupNoControl: {
@@ -297,7 +297,6 @@ EVENTS = {
   EventName.communityFeatureDisallowed: {
     # LOW priority to overcome Cruise Error
     ET.PERMANENT: Alert(
-      "",
       "커뮤니티 기능 감지됨",
       "개발자설정에서 커뮤니티 기능을 활성화해주세요",
       AlertStatus.normal, AlertSize.mid,
