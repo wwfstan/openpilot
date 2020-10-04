@@ -57,7 +57,7 @@ class CarInterface(CarInterfaceBase):
     ret.lateralTuning.pid.kfBP = [0., 10., 30.]
     ret.lateralTuning.pid.kfV = [0.00002, 0.00002, 0.00002]
 
-    if candidate == CAR.SANTA_FE:
+    if candidate in [CAR.SANTA_FE, CAR.SANTA_FE_2017]:
       ret.mass = 3982. * CV.LB_TO_KG + STD_CARGO_KG
       ret.wheelbase = 2.766
       # Values from optimizer
@@ -176,40 +176,24 @@ class CarInterface(CarInterfaceBase):
     # these cars require a special panda safety mode due to missing counters and checksums in the messages
 
     ret.mdpsHarness = Params().get('MdpsHarnessEnabled') == b'1'
-<<<<<<< HEAD
-    ret.sasBus = 0 if 688 in fingerprint[0] else 1
-=======
     ret.sasBus = 0 if (688 in fingerprint[0] or not ret.mdpsHarness) else 1
->>>>>>> xps/Xps_Community_Release
     ret.fcaBus = 0 if 909 in fingerprint[0] else 2 if 909 in fingerprint[2] else -1
     ret.bsmAvailable = True if 1419 in fingerprint[0] else False
     ret.lfaAvailable = True if 1157 in fingerprint[2] else False
     ret.lvrAvailable = True if 871 in fingerprint[0] else False
     ret.evgearAvailable = True if 882 in fingerprint[0] else False
     ret.emsAvailable = True if 608 and 809 in fingerprint[0] else False
-<<<<<<< HEAD
-  
-=======
 
->>>>>>> xps/Xps_Community_Release
     if Params().get('SccEnabled') == b'1':
       ret.sccBus = 2 if 1057 in fingerprint[2] else 0
     else:
       ret.sccBus = -1
-<<<<<<< HEAD
-      
-=======
 
->>>>>>> xps/Xps_Community_Release
     ret.radarOffCan = (ret.sccBus == -1)
     ret.radarTimeStep = 0.02
 
     ret.openpilotLongitudinalControl = Params().get('LongControlEnabled') == b'1' and not (ret.sccBus == 0)
-<<<<<<< HEAD
-   
-=======
 
->>>>>>> xps/Xps_Community_Release
     if candidate in [ CAR.HYUNDAI_GENESIS, CAR.IONIQ_EV_LTD, CAR.IONIQ_HEV, CAR.KONA_EV, CAR.KIA_NIRO_EV, CAR.KIA_SORENTO, CAR.SONATA_2019,
                       CAR.KIA_OPTIMA, CAR.VELOSTER, CAR.KIA_STINGER, CAR.GENESIS_G70, CAR.SONATA_HEV, CAR.SANTA_FE, CAR.GENESIS_G80,
                       CAR.GENESIS_G90]:
@@ -239,10 +223,6 @@ class CarInterface(CarInterfaceBase):
 
     ret.enableCamera = is_ecu_disconnected(fingerprint[0], FINGERPRINTS, ECU_FINGERPRINT, candidate, Ecu.fwdCamera) or has_relay
 
-<<<<<<< HEAD
-    params = Params()
-=======
->>>>>>> xps/Xps_Community_Release
     ret.radarDisablePossible = Params().get('RadarDisableEnabled') == b'1'
 
     if ret.radarDisablePossible:
