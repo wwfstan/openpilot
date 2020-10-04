@@ -16,7 +16,7 @@ extern "C"{
 #include "paint.hpp"
 #include "sidebar.hpp"
 
-int border_shifter = 20;
+int bdr_add = 45;
 // bdr_s = 10 , bdr_is = 30
 
 // TODO: this is also hardcoded in common/transformations/camera.py
@@ -521,7 +521,7 @@ static void ui_draw_vision_face(UIState *s) {
   const int face_size = 85;
   const int face_x = (s->scene.viz_rect.x + face_size + (bdr_is * 2));
   const int face_y = (s->scene.viz_rect.bottom() - footer_h + ((footer_h - face_size) / 2));
-  ui_draw_circle_image(s->vg, face_x, face_y +border_shifter+25, face_size, s->img_face, s->scene.dmonitoring_state.getFaceDetected());
+  ui_draw_circle_image(s->vg, face_x, face_y + bdr_add, face_size, s->img_face, s->scene.dmonitoring_state.getFaceDetected());
 }
 
 static void ui_draw_driver_view(UIState *s) {
@@ -574,7 +574,7 @@ static void ui_draw_driver_view(UIState *s) {
   const int face_size = 85;
   const int x = (valid_frame_x + face_size + (bdr_s * 2)) + (scene->is_rhd ? valid_frame_w - box_h / 2:0);
   const int y = (box_y + box_h - face_size - bdr_s - (bdr_s * 1.5));
-  ui_draw_circle_image(s->vg, x, y +border_shifter+25, face_size, s->img_face, scene->dmonitoring_state.getFaceDetected());
+  ui_draw_circle_image(s->vg, x, y + bdr_add, face_size, s->img_face, scene->dmonitoring_state.getFaceDetected());
 }
 
 static void ui_draw_vision_brake(UIState *s) {
@@ -585,7 +585,7 @@ static void ui_draw_vision_brake(UIState *s) {
   const int brake_y = (footer_y + ((footer_h - brake_size) / 2));
   const int brake_img_size = (brake_size * 1.5);
   const int brake_img_x = (brake_x - (brake_img_size / 2));
-  const int brake_img_y = (brake_y - (brake_size / 4)) +border_shifter+25);;
+  const int brake_img_y = (brake_y - (brake_size / 4)) + bdr_add);;
 
   bool brake_valid = scene->brakeLights;
   float brake_img_alpha = brake_valid ? 1.0f : 0.15f;
@@ -596,7 +596,7 @@ static void ui_draw_vision_brake(UIState *s) {
                                        s->img_brake, brake_img_alpha);
 
   nvgBeginPath(s->vg);
-  nvgCircle(s->vg, brake_x, (brake_y + (bdr_is * 1.5) + border_shifter + 25), brake_size);
+  nvgCircle(s->vg, brake_x, (brake_y + (bdr_is * 1.5) + bdr_add), brake_size);
   nvgFillColor(s->vg, brake_bg);
   nvgFill(s->vg);
 
