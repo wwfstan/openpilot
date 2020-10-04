@@ -23,7 +23,7 @@ static void ui_draw_sidebar_ipaddress(UIState *s) {
   const int ipaddress_x = 50;
   const int ipaddress_y = 210;
   const int ipaddress_w = 250;
-  nvgFillColor(s->vg, COLOR_LIME);
+  nvgFillColor(s->vg, COLOR_GREEN);
   nvgFontSize(s->vg, 35);
   nvgFontFaceId(s->vg, s->font_sans_bold);
   nvgTextBox(s->vg, ipaddress_x, ipaddress_y, ipaddress_w, s->scene.thermal.getWifiIpAddress().cStr(), NULL);
