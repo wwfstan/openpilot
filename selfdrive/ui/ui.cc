@@ -219,28 +219,26 @@ void update_sockets(UIState *s) {
   if (sm.updated("thermal")) {
     scene.thermal = sm["thermal"].getThermal();
     auto data = sm["thermal"].getThermal();
-
-    scene.maxCpuTemp = (data.getCpu0() + data.getCpu1() + data.getCpu2() + data.getCpu3()) / 4;       
   }
   if (sm.updated("ubloxGnss")) {
     auto data = sm["ubloxGnss"].getUbloxGnss();
     if (data.which() == cereal::UbloxGnss::MEASUREMENT_REPORT) {
       scene.satelliteCount = data.getMeasurementReport().getNumMeas();
     }
-  }
+  }  
   if (sm.updated("health")) {
     auto health = sm["health"].getHealth();
     scene.hwType = health.getHwType();
     s->ignition = health.getIgnitionLine() || health.getIgnitionCan();
   } else if ((s->sm->frame - s->sm->rcv_frame("health")) > 5*UI_FREQ) {
     scene.hwType = cereal::HealthData::HwType::UNKNOWN;
-  }
+  }  
   if (sm.updated("carParams")) {
     s->longitudinal_control = sm["carParams"].getCarParams().getOpenpilotLongitudinalControl();
-  }
+  }  
   if (sm.updated("driverState")) {
     scene.driver_state = sm["driverState"].getDriverState();
-  }
+  } 
   if (sm.updated("dMonitoringState")) {
     scene.dmonitoring_state = sm["dMonitoringState"].getDMonitoringState();
     scene.is_rhd = scene.dmonitoring_state.getIsRHD();
@@ -248,7 +246,6 @@ void update_sockets(UIState *s) {
   } else if ((sm.frame - sm.rcv_frame("dMonitoringState")) > UI_FREQ/2) {
     scene.frontview = false;
   }
-
   if (sm.updated("carState")) {
     auto data = sm["carState"].getCarState();
     if(scene.leftBlinker!=data.getLeftBlinker() || scene.rightBlinker!=data.getRightBlinker()){
