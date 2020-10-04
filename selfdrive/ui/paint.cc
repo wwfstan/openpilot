@@ -667,9 +667,10 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   int label_fontSize=15;
   int uom_fontSize = 15;
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
-  //CPU TEMP
+
 	/*
-    if (true) {
+  //add CPU temperature
+  if (true) {
     char val_str[16];
     char uom_str[6];    
     NVGcolor val_color = COLOR_GREEN_ALPHA(200);
@@ -687,9 +688,45 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
-  } */
+  } 
+  
+  //add CPU temperature
+  if (true) {
+    char val_str[16];
+    char uom_str[6];
+    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
 
-   //add visual radar relative distance
+    float cpuTemp = 0;
+    auto cpuList = scene->thermal.getCpu();
+
+    if(cpuList.size() > 0)
+    {
+        for(int i = 0; i < cpuList.size(); i++)
+            cpuTemp += cpuList[i];
+
+        cpuTemp /= cpuList.size();
+    }
+
+      if(cpuTemp > 80.f) {
+        val_color = COLOR_ORANGE_ALPHA(200);
+      }
+      if(cpuTemp > 92.f) {
+        val_color = COLOR_RED_ALPHA(200);
+      }
+      // temp is alway in C * 10
+      snprintf(val_str, sizeof(val_str), "%.0f°", cpuTemp);
+      snprintf(uom_str, sizeof(uom_str), "");
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "CPU 온도",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
+  
+  
+  */
+
+  //add visual radar relative distance
   if (true) {
     char val_str[16];
     char uom_str[6];
