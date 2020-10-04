@@ -243,6 +243,7 @@ def thermald_thread():
       try:
         network_type = HARDWARE.get_network_type()
         network_strength = HARDWARE.get_network_strength(network_type)
+        wifiIpAddress = HARDWARE.get_ip_address()        
       except Exception:
         cloudlog.exception("Error getting network status")
 
