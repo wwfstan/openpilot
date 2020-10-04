@@ -16,6 +16,9 @@ extern "C"{
 #include "paint.hpp"
 #include "sidebar.hpp"
 
+int border_shifter = 20;
+// bdr_s = 10 , bdr_is = 30
+
 // TODO: this is also hardcoded in common/transformations/camera.py
 // TODO: choose based on frame input size
 #ifdef QCOM2	
@@ -111,7 +114,7 @@ static void draw_chevron(UIState *s, float x_in, float y_in, float sz,
 static void ui_draw_circle_image(NVGcontext *vg, float x, float y, int size, int image, NVGcolor color, float img_alpha, int img_y = 0) {
   const int img_size = size * 1.5;
   nvgBeginPath(vg);
-  nvgCircle(vg, x, y + (bdr_s * 1.5), size);
+  nvgCircle(vg, x, y + (bdr_is * 1.5), size);
   nvgFillColor(vg, color);
   nvgFill(vg);
   ui_draw_image(vg, x - (img_size / 2), img_y ? img_y : y - (size / 4), img_size, img_size, image, img_alpha);
@@ -120,7 +123,7 @@ static void ui_draw_circle_image(NVGcontext *vg, float x, float y, int size, int
 static void ui_draw_circle_image(NVGcontext *vg, float x, float y, int size, int image, bool active) {
   float bg_alpha = active ? 0.3f : 0.1f;
   float img_alpha = active ? 1.0f : 0.15f;
-  ui_draw_circle_image(vg, x, y, size, image, nvgRGBA(0, 0, 0, (255 * bg_alpha)), img_alpha);
+  ui_draw_circle_image(vg, x, y, size, image, COLOR_BLACK_ALPHA(255 * bg_alpha), img_alpha);
 }
 
 static void draw_lead(UIState *s, const cereal::RadarState::LeadData::Reader &lead){
@@ -138,10 +141,10 @@ static void draw_lead(UIState *s, const cereal::RadarState::LeadData::Reader &le
     fillAlpha = (int)(fmin(fillAlpha, 255));
   }
   if (s->longitudinal_control) {
-    draw_chevron(s, d_rel + 3, lead.getYRel(), 25, nvgRGBA(201, 34, 49, fillAlpha), COLOR_YELLOW);
+    draw_chevron(s, d_rel + 3, lead.getYRel(), 25, COLOR_RED_ALPHA(fillAlpha), COLOR_YELLOW);
   }
   else {
-    draw_chevron(s, d_rel + 3, lead.getYRel(), 25, nvgRGBA(165, 255, 135, fillAlpha), COLOR_GREEN);
+    draw_chevron(s, d_rel + 3, lead.getYRel(), 25, COLOR_GREEN_ALPHA(fillAlpha), COLOR_GREEN);
   }
 }
 
@@ -354,7 +357,7 @@ static void ui_draw_vision_lanes(UIState *s) {
 static void ui_draw_world(UIState *s) {
   const UIScene *scene = &s->scene;
   const Rect &viz_rect = scene->viz_rect;
-  const int viz_w = s->fb_w - bdr_s * 2;
+  const int viz_w = s->fb_w - bdr_is * 2;
   const int inner_height = float(viz_w) * s->fb_h / s->fb_w;
   nvgSave(s->vg);
   nvgScissor(s->vg, viz_rect.x, viz_rect.y, viz_rect.w, viz_rect.h);
@@ -394,8 +397,8 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 
   int viz_maxspeed_w = 184;
   int viz_maxspeed_h = 202;
-  int viz_maxspeed_x = s->scene.viz_rect.x + (bdr_s*2);
-  int viz_maxspeed_y = s->scene.viz_rect.y + (bdr_s*1.5);
+  int viz_maxspeed_x = s->scene.viz_rect.x + (bdr_is*2);
+  int viz_maxspeed_y = s->scene.viz_rect.y + (bdr_is*1.5);
   int viz_maxspeed_xo = 180;
 
   viz_maxspeed_xo = 0;
@@ -409,13 +412,13 @@ static void ui_draw_vision_maxspeed(UIState *s) {
 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
   const int text_x = viz_maxspeed_x + (viz_maxspeed_xo / 2) + (viz_maxspeed_w / 2);
-  ui_draw_text(s->vg, text_x, 148, "MAX", 26 * 2.5, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), s->font_sans_regular);
+  ui_draw_text(s->vg, text_x, 110, "설정속도", 20 * 2.5, COLOR_WHITE_ALPHA(is_cruise_set ? 200 : 100), s->font_sans_regular);
 
   if (is_cruise_set) {
     snprintf(maxspeed_str, sizeof(maxspeed_str), "%d", maxspeed_calc);
-    ui_draw_text(s->vg, text_x, 242, maxspeed_str, 48 * 2.5, COLOR_WHITE, s->font_sans_bold);
+    ui_draw_text(s->vg, text_x, 210, maxspeed_str, 43 * 2.5, COLOR_WHITE, s->font_sans_bold);
   } else {
-    ui_draw_text(s->vg, text_x, 242, "N/A", 42 * 2.5, COLOR_WHITE_ALPHA(100), s->font_sans_semibold);
+    ui_draw_text(s->vg, text_x, 210, "-", 40 * 2.5, COLOR_WHITE_ALPHA(100), s->font_sans_semibold);
   }
 }
 
@@ -438,7 +441,7 @@ static void ui_draw_vision_speed(UIState *s) {
     nvgLineTo(s->vg, viz_speed_x - viz_speed_w/2, viz_rect.y + header_h/4 + header_h/4);
     nvgLineTo(s->vg, viz_speed_x, viz_rect.y + header_h/2 + header_h/4);
     nvgClosePath(s->vg);
-    nvgFillColor(s->vg, nvgRGBA(23,134,68,scene->blinker_blinkingrate>=50?210:60));
+    nvgFillColor(s->vg, COLOR_GREEN_ALPHA(scene->blinker_blinkingrate>=50?210:60));
     nvgFill(s->vg);
   }
   if(scene->rightBlinker) {
@@ -447,7 +450,7 @@ static void ui_draw_vision_speed(UIState *s) {
     nvgLineTo(s->vg, viz_speed_x+viz_speed_w + viz_speed_w/2, viz_rect.y + header_h/4 + header_h/4);
     nvgLineTo(s->vg, viz_speed_x+viz_speed_w, viz_rect.y + header_h/2 + header_h/4);
     nvgClosePath(s->vg);
-    nvgFillColor(s->vg, nvgRGBA(23,134,68,scene->blinker_blinkingrate>=50?210:60));
+    nvgFillColor(s->vg, COLOR_GREEN_ALPHA(scene->blinker_blinkingrate>=50?210:60));
     nvgFill(s->vg);
     }
   if(scene->leftBlinker || scene->rightBlinker) {
@@ -464,15 +467,15 @@ static void ui_draw_vision_speed(UIState *s) {
 
 static void ui_draw_vision_event(UIState *s) {
   const int viz_event_w = 220;
-  const int viz_event_x = s->scene.viz_rect.right() - (viz_event_w + bdr_s*2);
-  const int viz_event_y = s->scene.viz_rect.y + (bdr_s*1.5);
+  const int viz_event_x = s->scene.viz_rect.right() - (viz_event_w + bdr_is*2);
+  const int viz_event_y = s->scene.viz_rect.y + (bdr_is*1.5);
   if (s->scene.controls_state.getDecelForModel() && s->scene.controls_state.getEnabled()) {
     // draw winding road sign
     const int img_turn_size = 160*1.5;
-    ui_draw_image(s->vg, viz_event_x - (img_turn_size / 4), viz_event_y + bdr_s - 25, img_turn_size, img_turn_size, s->img_turn, 1.0f);
+    ui_draw_image(s->vg, viz_event_x - (img_turn_size / 4), viz_event_y + bdr_is - 25, img_turn_size, img_turn_size, s->img_turn, 1.0f);
   } else {
     // draw steering wheel
-    const int bg_wheel_size = 96;
+    const int bg_wheel_size = 90;
     const int bg_wheel_x = viz_event_x + (viz_event_w-bg_wheel_size);
     const int bg_wheel_y = viz_event_y + (bg_wheel_size/2);
     const int img_wheel_size = bg_wheel_size*1.5;
@@ -487,27 +490,27 @@ static void ui_draw_vision_event(UIState *s) {
 
     if (is_engaged || is_warning || is_engageable) {
       nvgBeginPath(s->vg);
-      nvgCircle(s->vg, bg_wheel_x, (bg_wheel_y + (bdr_s*1.5)), bg_wheel_size);
+      nvgCircle(s->vg, bg_wheel_x, (bg_wheel_y + (bdr_is*1.5)), bg_wheel_size);
       if (is_oplong) {
-        nvgFillColor(s->vg, nvgRGBA(105, 105, 105, 105));
+        nvgFillColor(s->vg, COLOR_OPLONG);
       }
       else if (is_engaged) {
-        nvgFillColor(s->vg, nvgRGBA(23, 134, 68, 255));
+        nvgFillColor(s->vg, COLOR_ENGAGED);
       } else if (is_warning) {
         nvgFillColor(s->vg, COLOR_OCHRE);
       } else if (is_engageable) {
-        nvgFillColor(s->vg, nvgRGBA(23, 51, 73, 255));
+        nvgFillColor(s->vg, COLOR_ENGAGEABLE);
       }
       nvgFill(s->vg);
       img_wheel_alpha = 1.0f;
     }
     nvgSave(s->vg);
-    nvgTranslate(s->vg,bg_wheel_x,(bg_wheel_y + (bdr_s*1.5)));
+    nvgTranslate(s->vg,bg_wheel_x,(bg_wheel_y + (bdr_is*1.5)));
     nvgRotate(s->vg,-img_rotation);
     nvgBeginPath(s->vg);
-    NVGpaint imgPaint = nvgImagePattern(s->vg, img_wheel_x-bg_wheel_x, img_wheel_y-(bg_wheel_y + (bdr_s*1.5)),
+    NVGpaint imgPaint = nvgImagePattern(s->vg, img_wheel_x-bg_wheel_x, img_wheel_y-(bg_wheel_y + (bdr_is*1.5)),
 	img_wheel_size, img_wheel_size, 0, s->img_wheel, img_wheel_alpha);
-    nvgRect(s->vg, img_wheel_x-bg_wheel_x, img_wheel_y-(bg_wheel_y + (bdr_s*1.5)), img_wheel_size, img_wheel_size);
+    nvgRect(s->vg, img_wheel_x-bg_wheel_x, img_wheel_y-(bg_wheel_y + (bdr_is*1.5)), img_wheel_size, img_wheel_size);
     nvgFillPaint(s->vg, imgPaint);
     nvgFill(s->vg);
     nvgRestore(s->vg);
@@ -515,10 +518,10 @@ static void ui_draw_vision_event(UIState *s) {
 }
 
 static void ui_draw_vision_face(UIState *s) {
-  const int face_size = 96;
-  const int face_x = (s->scene.viz_rect.x + face_size + (bdr_s * 2));
+  const int face_size = 85;
+  const int face_x = (s->scene.viz_rect.x + face_size + (bdr_is * 2));
   const int face_y = (s->scene.viz_rect.bottom() - footer_h + ((footer_h - face_size) / 2));
-  ui_draw_circle_image(s->vg, face_x, face_y, face_size, s->img_face, s->scene.dmonitoring_state.getFaceDetected());
+  ui_draw_circle_image(s->vg, face_x, face_y +border_shifter+25, face_size, s->img_face, s->scene.dmonitoring_state.getFaceDetected());
 }
 
 static void ui_draw_driver_view(UIState *s) {
@@ -542,8 +545,8 @@ static void ui_draw_driver_view(UIState *s) {
   ui_draw_rect(s->vg, scene->is_rhd ? valid_frame_x : valid_frame_x + box_h / 2, box_y, valid_frame_w - box_h / 2, box_h, COLOR_BLACK_ALPHA(144));
 
   // borders
-  ui_draw_rect(s->vg, frame_x, box_y, valid_frame_x - frame_x, box_h, nvgRGBA(23, 51, 73, 255));
-  ui_draw_rect(s->vg, valid_frame_x + valid_frame_w, box_y, frame_w - valid_frame_w - (valid_frame_x - frame_x), box_h, nvgRGBA(23, 51, 73, 255));
+  ui_draw_rect(s->vg, frame_x, box_y, valid_frame_x - frame_x, box_h, COLOR_ENGAGEABLE);
+  ui_draw_rect(s->vg, valid_frame_x + valid_frame_w, box_y, frame_w - valid_frame_w - (valid_frame_x - frame_x), box_h, COLOR_ENGAGEABLE);
 
   // draw face box
   if (scene->dmonitoring_state.getFaceDetected()) {
@@ -571,29 +574,29 @@ static void ui_draw_driver_view(UIState *s) {
   const int face_size = 85;
   const int x = (valid_frame_x + face_size + (bdr_s * 2)) + (scene->is_rhd ? valid_frame_w - box_h / 2:0);
   const int y = (box_y + box_h - face_size - bdr_s - (bdr_s * 1.5));
-  ui_draw_circle_image(s->vg, x, y, face_size, s->img_face, scene->dmonitoring_state.getFaceDetected());
+  ui_draw_circle_image(s->vg, x, y +border_shifter+25, face_size, s->img_face, scene->dmonitoring_state.getFaceDetected());
 }
 
 static void ui_draw_vision_brake(UIState *s) {
   const UIScene *scene = &s->scene;
   const Rect &viz_rect = s->scene.viz_rect;
-  const int brake_size = 96;
-  const int brake_x = (viz_rect.x + (brake_size * 3) + (bdr_s * 4));
+  const int brake_size = 85;
+  const int brake_x = (viz_rect.x + (brake_size * 3) + (bdr_is * 2.5));
   const int brake_y = (footer_y + ((footer_h - brake_size) / 2));
   const int brake_img_size = (brake_size * 1.5);
   const int brake_img_x = (brake_x - (brake_img_size / 2));
-  const int brake_img_y = (brake_y - (brake_size / 4));
+  const int brake_img_y = (brake_y - (brake_size / 4)) +border_shifter+25);;
 
   bool brake_valid = scene->brakeLights;
   float brake_img_alpha = brake_valid ? 1.0f : 0.15f;
   float brake_bg_alpha = brake_valid ? 0.3f : 0.1f;
-  NVGcolor brake_bg = nvgRGBA(0, 0, 0, (255 * brake_bg_alpha));
+  NVGcolor brake_bg = COLOR_BLACK_ALPHA(255 * brake_bg_alpha);
   NVGpaint brake_img = nvgImagePattern(s->vg, brake_img_x, brake_img_y,
                                        brake_img_size, brake_img_size, 0,
                                        s->img_brake, brake_img_alpha);
 
   nvgBeginPath(s->vg);
-  nvgCircle(s->vg, brake_x, (brake_y + (bdr_s * 1.5)), brake_size);
+  nvgCircle(s->vg, brake_x, (brake_y + (bdr_is * 1.5) + border_shifter + 25), brake_size);
   nvgFillColor(s->vg, brake_bg);
   nvgFill(s->vg);
 
@@ -660,10 +663,30 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   int bb_h = 5;
   NVGcolor lab_color = COLOR_WHITE_ALPHA(200);
   NVGcolor uom_color = COLOR_WHITE_ALPHA(200);
-  int value_fontSize=30;
+  int value_fontSize=28;
   int label_fontSize=15;
   int uom_fontSize = 15;
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
+  //CPU TEMP
+    if (true) {
+    char val_str[16];
+    char uom_str[6];    
+    NVGcolor val_color = COLOR_GREEN_ALPHA(200);
+      //show Orange if more than 70°C
+      //show red if more than 80°C
+      if((int)((scene->maxCpuTemp)/10) > 69) {
+        val_color = COLOR_ORANGE_ALPHA(200);
+      }
+      if((int)((scene->maxCpuTemp)/10) > 79) {
+        val_color = COLOR_RED_ALPHA(200);
+      }
+    snprintf(val_str, sizeof(val_str), "%.0f°C", (round((scene->maxCpuTemp)/10)));
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "CPU 온도",
+        bb_rx, bb_ry, bb_uom_dx,
+        val_color, lab_color, uom_color,
+        value_fontSize, label_fontSize, uom_fontSize );
+    bb_ry = bb_y + bb_h;
+  }
 
    //add visual radar relative distance
   if (true) {
@@ -685,7 +708,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
        snprintf(val_str, sizeof(val_str), "-");
     }
     snprintf(uom_str, sizeof(uom_str), "m");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "Rel Dist",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "앞차 거리차",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
@@ -720,7 +743,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     } else {
       snprintf(uom_str, sizeof(uom_str), "mi/h");
     }
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "Rel Vel",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "앞차 속도차",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
@@ -744,7 +767,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
       snprintf(val_str, sizeof(val_str), "%.1f",(s->scene.angleSteers));
 
       snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "Str Ang",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "핸들 조향각",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
@@ -771,7 +794,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
        snprintf(val_str, sizeof(val_str), "-");
     }
       snprintf(uom_str, sizeof(uom_str), "");
-    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "Des Str Ang",
+    bb_h +=bb_ui_draw_measure(s,  val_str, uom_str, "OP 조향각",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
         value_fontSize, label_fontSize, uom_fontSize );
@@ -810,8 +833,8 @@ static void bb_ui_draw_UI(UIState *s)
   const UIScene *scene = &s->scene;
 
   const int bb_dmr_w = 180;
-  const int bb_dmr_x = scene->viz_rect.x + scene->viz_rect.w - bb_dmr_w - (bdr_s * 2);
-  const int bb_dmr_y = (scene->viz_rect.y + (bdr_s * 1.5)) + 220;
+  const int bb_dmr_x = scene->viz_rect.x + scene->viz_rect.w - bb_dmr_w - (bdr_is * 2);
+  const int bb_dmr_y = (scene->viz_rect.y + (bdr_is * 1.5)) + 220;
 
   bb_ui_draw_measures_right(s, bb_dmr_x, bb_dmr_y-20, bb_dmr_w);
 }
@@ -838,9 +861,9 @@ void ui_draw_vision_alert(UIState *s, cereal::ControlsState::AlertSize va_size, 
   const uint8_t *color = alert_colors[va_color];
   int alr_s = alert_size_map[va_size];
 
-  const int alr_x = scene->viz_rect.x - bdr_s;
-  const int alr_w = scene->viz_rect.w + (bdr_s*2);
-  const int alr_h = alr_s+(va_size==cereal::ControlsState::AlertSize::NONE?0:bdr_s);
+  const int alr_x = scene->viz_rect.x - bdr_is;
+  const int alr_w = scene->viz_rect.w + (bdr_is*2);
+  const int alr_h = alr_s+(va_size==cereal::ControlsState::AlertSize::NONE?0:bdr_is);
   const int alr_y = s->fb_h-alr_h;
 
   ui_draw_rect(s->vg, alr_x, alr_y, alr_w, alr_h, nvgRGBA(color[0],color[1],color[2],(color[3]*s->alert_blinking_alpha)));
@@ -853,16 +876,16 @@ void ui_draw_vision_alert(UIState *s, cereal::ControlsState::AlertSize va_size, 
   nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BASELINE);
 
   if (va_size == cereal::ControlsState::AlertSize::SMALL) {
-    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2+15, va_text1, 40*2.5, COLOR_WHITE, s->font_sans_semibold);
+    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2+15, va_text1, 40*2, COLOR_WHITE, s->font_sans_semibold);
   } else if (va_size == cereal::ControlsState::AlertSize::MID) {
-    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2-45, va_text1, 48*2.5, COLOR_WHITE, s->font_sans_bold);
-    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2+75, va_text2, 36*2.5, COLOR_WHITE, s->font_sans_regular);
+    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2-45, va_text1, 48*2, COLOR_WHITE, s->font_sans_bold);
+    ui_draw_text(s->vg, alr_x+alr_w/2, alr_y+alr_h/2+75, va_text2, 36*2, COLOR_WHITE, s->font_sans_regular);
   } else if (va_size == cereal::ControlsState::AlertSize::FULL) {
     nvgFontSize(s->vg, (longAlert1?72:96)*2.5);
     nvgFontFaceId(s->vg, s->font_sans_bold);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_MIDDLE);
     nvgTextBox(s->vg, alr_x, alr_y+(longAlert1?360:420), alr_w-60, va_text1, NULL);
-    nvgFontSize(s->vg, 48*2.5);
+    nvgFontSize(s->vg, 48*2);
     nvgFontFaceId(s->vg,  s->font_sans_regular);
     nvgTextAlign(s->vg, NVG_ALIGN_CENTER | NVG_ALIGN_BOTTOM);
     nvgTextBox(s->vg, alr_x, alr_h-(longAlert1?300:360), alr_w-60, va_text2, NULL);
@@ -874,7 +897,7 @@ static void ui_draw_vision(UIState *s) {
   const Rect &viz_rect = scene->viz_rect;
   // Draw video frames
   glEnable(GL_SCISSOR_TEST);
-  glViewport(viz_rect.x+scene->ui_viz_ro, viz_rect.y, s->fb_w - bdr_s*2, viz_rect.h);
+  glViewport(viz_rect.x+scene->ui_viz_ro, viz_rect.y, s->fb_w - bdr_is*2, viz_rect.h);
   glScissor(viz_rect.x, viz_rect.y, viz_rect.w, viz_rect.h);
   draw_frame(s);
   glDisable(GL_SCISSOR_TEST);
@@ -1012,11 +1035,11 @@ void ui_nvg_init(UIState *s) {
 
   assert(s->vg);
 
-  s->font_sans_regular = nvgCreateFont(s->vg, "sans-regular", "../assets/fonts/opensans_regular.ttf");
+  s->font_sans_regular = nvgCreateFont(s->vg, "sans-regular", "../assets/fonts/NanumGothic.ttf");
   assert(s->font_sans_regular >= 0);
-  s->font_sans_semibold = nvgCreateFont(s->vg, "sans-semibold", "../assets/fonts/opensans_semibold.ttf");
+  s->font_sans_semibold = nvgCreateFont(s->vg, "sans-semibold", "../assets/fonts/NanumGothicBold.ttf");
   assert(s->font_sans_semibold >= 0);
-  s->font_sans_bold = nvgCreateFont(s->vg, "sans-bold", "../assets/fonts/opensans_bold.ttf");
+  s->font_sans_bold = nvgCreateFont(s->vg, "sans-bold", "../assets/fonts/NanumGothicExtraBold.ttf");
   assert(s->font_sans_bold >= 0);
 
   s->img_wheel = nvgCreateImage(s->vg, "../assets/img_chffr_wheel.png", 1);
