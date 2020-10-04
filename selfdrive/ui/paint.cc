@@ -667,7 +667,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     if (true) {
     char val_str[16];
     char uom_str[6];    
-    NVGcolor val_color = COLOR_LIME_ALPHA(200);
+    NVGcolor val_color = COLOR_GREEN_ALPHA(200);
       //show Orange if more than 70°C
       //show red if more than 80°C
       if((int)((scene->maxCpuTemp)/10) > 69) {
@@ -750,7 +750,7 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   if (true) {
     char val_str[16];
     char uom_str[6];
-    NVGcolor val_color = COLOR_LIME_ALPHA(200);
+    NVGcolor val_color = COLOR_GREEN_ALPHA(200);
       //show Orange if more than 30 degrees
       //show red if  more than 50 degrees
       if(((int)(scene->angleSteers) < -30) || ((int)(scene->angleSteers) > 30)) {
