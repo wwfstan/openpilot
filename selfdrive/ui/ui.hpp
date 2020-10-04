@@ -31,16 +31,20 @@
 #define COLOR_BLACK_ALPHA(x) nvgRGBA(0, 0, 0, x)
 #define COLOR_WHITE nvgRGBA(255, 255, 255, 255)
 #define COLOR_WHITE_ALPHA(x) nvgRGBA(255, 255, 255, x)
-#define COLOR_YELLOW nvgRGBA(218, 202, 37, 255)
-#define COLOR_RED nvgRGBA(201, 34, 49, 255)
 #define COLOR_OCHRE nvgRGBA(218, 111, 37, 255)
 #define COLOR_OCHRE_ALPHA(x) nvgRGBA(218, 111, 37, x)
-#define COLOR_GREEN nvgRGBA(0, 255, 0, 255)
-#define COLOR_GREEN_ALPHA(x) nvgRGBA(0, 255, 0, x)
-#define COLOR_ORANGE nvgRGBA(255, 175, 3, 255)
-#define COLOR_ORANGE_ALPHA(x) nvgRGBA(255, 175, 3, x)
-#define COLOR_RED_ALPHA(x) nvgRGBA(201, 34, 49, x)
-#define COLOR_YELLOW_ALPHA(x) nvgRGBA(218, 202, 37, x)
+#define COLOR_LIME nvgRGBA(0, 255, 0, 255)
+#define COLOR_LIME_ALPHA(x) nvgRGBA(0, 255, 0, x)
+#define COLOR_ORANGE nvgRGBA(255, 165, 0, 255)
+#define COLOR_ORANGE_ALPHA(x) nvgRGBA(255, 165, 0, x)
+#define COLOR_RED nvgRGBA(255, 0, 0, 255)
+#define COLOR_RED_ALPHA(x) nvgRGBA(255, 0, 0, x)
+#define COLOR_YELLOW nvgRGBA(255, 255, 0, 255)
+#define COLOR_YELLOW_ALPHA(x) nvgRGBA(255, 255, 0, x)
+#define COLOR_DEEPSKYBLUE nvgRGBA(0, 191, 255, 255)
+#define COLOR_ENGAGED nvgRGBA(23, 134, 68, 255)
+#define COLOR_ENGAGEABLE nvgRGBA(23, 51, 73, 255)
+
 #define UI_BUF_COUNT 4
 
 typedef struct Rect {
@@ -92,9 +96,9 @@ typedef enum UIStatus {
 static std::map<UIStatus, Color> bg_colors = {
   {STATUS_OFFROAD, {0x07, 0x23, 0x39}},
   {STATUS_DISENGAGED, {0x17, 0x33, 0x49}},
-  {STATUS_ENGAGED, {0x17, 0x86, 0x44}},
+  {STATUS_ENGAGED, {0x17, 0x86, 0x44, 0x0f}},
   {STATUS_ENGAGED_OPLONG, {0x69, 0x69, 0x69}},
-  {STATUS_WARNING, {0xDA, 0x6F, 0x25}},
+  {STATUS_WARNING, {0xDA, 0x6F, 0x25, 0x0f}},
   {STATUS_ALERT, {0xC9, 0x22, 0x31}},
 };
 
@@ -135,12 +139,13 @@ typedef struct UIScene {
   float angleSteersDes;
   bool steerOverride;
   float output_scale; 
-  float cpu0Temp;
+  //float cpu0Temp;
+  float maxCpuTemp;
   int batteryPercent;
   bool batteryCharging;
   char batteryStatus[64];
   // ip addr
-  char ipAddr[20];
+  //char ipAddr[20];
   
 
   cereal::HealthData::HwType hwType;
