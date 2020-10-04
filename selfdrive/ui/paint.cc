@@ -585,7 +585,7 @@ static void ui_draw_vision_brake(UIState *s) {
   const int brake_y = (footer_y + ((footer_h - brake_size) / 2));
   const int brake_img_size = (brake_size * 1.5);
   const int brake_img_x = (brake_x - (brake_img_size / 2));
-  const int brake_img_y = (brake_y - (brake_size / 4)) + bdr_add);;
+  const int brake_img_y = (brake_y - (brake_size / 4) + bdr_add);
 
   bool brake_valid = scene->brakeLights;
   float brake_img_alpha = brake_valid ? 1.0f : 0.15f;
