@@ -668,8 +668,8 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
   int uom_fontSize = 15;
   int bb_uom_dx =  (int)(bb_w /2 - uom_fontSize*2.5) ;
 
-	/*
-  //add CPU temperature
+  /*
+  //add CPU temperature old
   if (true) {
     char val_str[16];
     char uom_str[6];    
@@ -689,12 +689,13 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   } 
+  */
   
   //add CPU temperature
   if (true) {
     char val_str[16];
     char uom_str[6];
-    NVGcolor val_color = nvgRGBA(255, 255, 255, 200);
+    NVGcolor val_color = COLOR_GREEN_ALPHA(200);
 
     float cpuTemp = 0;
     auto cpuList = scene->thermal.getCpu();
@@ -703,14 +704,13 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
     {
         for(int i = 0; i < cpuList.size(); i++)
             cpuTemp += cpuList[i];
-
+	    
         cpuTemp /= cpuList.size();
     }
-
-      if(cpuTemp > 80.f) {
+      if(cpuTemp > 70.f) {
         val_color = COLOR_ORANGE_ALPHA(200);
       }
-      if(cpuTemp > 92.f) {
+      if(cpuTemp > 80.f) {
         val_color = COLOR_RED_ALPHA(200);
       }
       // temp is alway in C * 10
@@ -722,9 +722,6 @@ static void bb_ui_draw_measures_right(UIState *s, int bb_x, int bb_y, int bb_w )
         value_fontSize, label_fontSize, uom_fontSize );
     bb_ry = bb_y + bb_h;
   }
-  
-  
-  */
 
   //add visual radar relative distance
   if (true) {
