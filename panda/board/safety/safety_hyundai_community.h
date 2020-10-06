@@ -42,24 +42,21 @@ static int hyundai_community_rx_hook(CAN_FIFOMailBox_TypeDef *to_push) {
                             hyundai_get_checksum, hyundai_compute_checksum,
                             hyundai_get_counter);
 
-  if (bus == 1 && HKG_LCAN_on_BUS1) {valid = false;}
+  if (bus == 1 && HKG_LCAN_on_bus1) {valid = false;}
 
   // check MDPS on Bus
   if ((addr == 593 || addr == 897) && HKG_mdps_bus != bus) {
     if (bus == 0){
       HKG_mdps_bus = bus;
-      if (!HKG_forward_BUS1 && board_has_obd()) {
-        current_board->set_can_mode(CAN_MODE_NORMAL);
-      }
-    } else if (bus == 1 && !HKG_LCAN_on_BUS1) {
+    } else if (bus == 1 && !HKG_LCAN_on_bus1) {
       HKG_mdps_bus = bus;
-      HKG_forward_BUS1 = true;
+      HKG_forward_bus1 = true;
     } 
   }
   // check if we have a SCC on Bus1 and LCAN not on the bus
-  if (bus == 1 && addr == 1057 && !HKG_LCAN_on_BUS1) {
-    if (!HKG_forward_BUS1) {
-      HKG_forward_BUS1 = true;
+  if (bus == 1 && addr == 1057 && !HKG_LCAN_on_bus1) {
+    if (!HKG_forward_bus1) {
+      HKG_forward_bus1 = true;
     }
   }
 
@@ -232,7 +229,7 @@ static int hyundai_community_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_f
   int bus_fwd = -1;
   int addr = GET_ADDR(to_fwd);
   int fwd_to_bus1 = -1;
-  if (HKG_forward_BUS1){fwd_to_bus1 = 1;}
+  if (HKG_forward_bus1){fwd_to_bus1 = 1;}
 
   // forward cam to ccan and viceversa, except lkas cmd
   if (!relay_malfunction) {
@@ -240,7 +237,7 @@ static int hyundai_community_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_f
       if (!OP_CLU_live || addr != 1265 || HKG_mdps_bus == 0) {
         if (!OP_MDPS_live || addr != 593) {
           if (!OP_EMS_live || addr != 790) {
-            bus_fwd = HKG_forward_BUS1 ? 12 : 2;
+            bus_fwd = HKG_forward_bus1 ? 12 : 2;
           } else {
             bus_fwd = 2;  // EON create EMS11 for MDPS
             OP_EMS_live -= 1;
@@ -254,7 +251,7 @@ static int hyundai_community_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_f
         OP_CLU_live -= 1;
       }
     }
-    if (bus_num == 1 && HKG_forward_BUS1) {
+    if (bus_num == 1 && HKG_forward_bus1) {
       if (!OP_MDPS_live || addr != 593) {
         if (!OP_SCC_live || (addr != 1056 && addr != 1057 && addr != 1290 && addr != 905)) {
           bus_fwd = 20;
@@ -270,7 +267,7 @@ static int hyundai_community_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_f
     if (bus_num == 2) {
       if (!OP_LKAS_live || (addr != 832 && addr != 1157)) {
         if (!OP_SCC_live || (addr != 1056 && addr != 1057 && addr != 1290 && addr != 905)) {
-          bus_fwd = HKG_forward_BUS1 ? 10 : 0;
+          bus_fwd = HKG_forward_bus1 ? 10 : 0;
         } else {
           bus_fwd = fwd_to_bus1;  // EON create SCC12 for Car
           OP_SCC_live -= 1;
@@ -286,7 +283,7 @@ static int hyundai_community_fwd_hook(int bus_num, CAN_FIFOMailBox_TypeDef *to_f
     if (bus_num == 0) {
       bus_fwd = fwd_to_bus1;
     }
-    if (bus_num == 1 && HKG_forward_BUS1) {
+    if (bus_num == 1 && HKG_forward_bus1) {
       bus_fwd = 0;
     }
   }
@@ -298,7 +295,7 @@ static void hyundai_community_init(int16_t param) {
   controls_allowed = false;
   relay_malfunction_reset();
 
-  if (board_has_obd() && HKG_forward_BUS2) {
+  if (board_has_obd() && HKG_forward_obd) {
     current_board->set_can_mode(CAN_MODE_OBD_CAN2);
     }
 }
