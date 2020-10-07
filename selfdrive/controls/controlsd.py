@@ -22,7 +22,8 @@ from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.controls.lib.planner import LON_MPC_STEP
 from selfdrive.locationd.calibrationd import Calibration
 
-LDW_MIN_SPEED = 31 * CV.MPH_TO_MS
+#LDW_MIN_SPEED = 31 * CV.MPH_TO_MS
+LDW_MIN_SPEED = 60 * CV.KPH_TO_MS
 LANE_DEPARTURE_THRESHOLD = 0.1
 STEER_ANGLE_SATURATION_TIMEOUT = 1.0 / DT_CTRL
 STEER_ANGLE_SATURATION_THRESHOLD = 2.5  # Degrees
@@ -208,10 +209,10 @@ class Controls:
     if not self.sm['liveLocationKalman'].sensorsOK and not NOSENSOR:
       if self.sm.frame > 5 / DT_CTRL:  # Give locationd some time to receive all the inputs
         self.events.add(EventName.sensorDataInvalid)
-    if not self.sm['liveLocationKalman'].gpsOK and (self.distance_traveled > 1000):
+#   if not self.sm['liveLocationKalman'].gpsOK and (self.distance_traveled > 1000):
       # Not show in first 1 km to allow for driving out of garage. This event shows after 5 minutes
-      if not (SIMULATION or NOSENSOR):  # TODO: send GPS in carla
-        self.events.add(EventName.noGps)
+#      if not (SIMULATION or NOSENSOR):  # TODO: send GPS in carla
+#        self.events.add(EventName.noGps)
     if not self.sm['pathPlan'].paramsValid:
       self.events.add(EventName.vehicleModelInvalid)
     if not self.sm['liveLocationKalman'].posenetOK:
