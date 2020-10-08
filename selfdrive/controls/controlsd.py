@@ -3,7 +3,7 @@ import os
 from cereal import car, log
 from common.hardware import HARDWARE
 from common.numpy_fast import clip
-from common.realtime import sec_since_boot, config_rt_process, Priority, Ratekeeper, DT_CTRL
+from common.realtime import sec_since_boot, config_realtime_process, Priority, Ratekeeper, DT_CTRL
 from common.profiler import Profiler
 from common.params import Params, put_nonblocking
 import cereal.messaging as messaging
@@ -43,7 +43,7 @@ EventName = car.CarEvent.EventName
 
 class Controls:
   def __init__(self, sm=None, pm=None, can_sock=None):
-    config_rt_process(3, Priority.CTRL_HIGH)
+    config_realtime_process(3, Priority.CTRL_HIGH)
 
     # Setup sockets
     self.pm = pm
@@ -125,7 +125,7 @@ class Controls:
     self.events_prev = []
     self.current_alert_types = [ET.PERMANENT]
 
-    self.sm['liveCalibration'].calStatus = Calibration.INVALID
+    self.sm['liveCalibration'].calStatus = Calibration.CALIBRATED
     self.sm['thermal'].freeSpace = 1.
     self.sm['dMonitoringState'].events = []
     self.sm['dMonitoringState'].awarenessStatus = 1.
@@ -235,7 +235,7 @@ class Controls:
 
     # Only allow engagement with brake pressed when stopped behind another stopped car
     #    if CS.brakePressed and self.sm['plan'].vTargetFuture >= STARTING_TARGET_SPEED \
-    #       and not self.CP.radarOffCan and CS.vEgo < 0.3:
+    #      and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3:
     #      self.events.add(EventName.noTarget)
 
   def data_sample(self):
@@ -275,7 +275,10 @@ class Controls:
 
     # if stock cruise is completely disabled, then we can use our own set speed logic
     if not self.CP.enableCruise:
-      self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.vEgo, CS.gasPressed, CS.buttonEvents, self.enabled, self.is_metric)
+      if self.CP.openpilotLongitudinalControl:
+        self.v_cruise_kph = update_v_cruise(self.v_cruise_kph, CS.vEgo, CS.gasPressed, CS.buttonEvents, self.enabled, self.is_metric)
+      elif CS.cruiseState.enabled:
+        self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
     elif self.CP.enableCruise and CS.cruiseState.enabled:
       self.v_cruise_kph = CS.cruiseState.speed * CV.MS_TO_KPH
 
@@ -403,7 +406,7 @@ class Controls:
     CC.actuators = actuators
 
     CC.cruiseControl.override = True
-    CC.cruiseControl.cancel = not self.CP.enableCruise or (not self.enabled and CS.cruiseState.enabled)
+    CC.cruiseControl.cancel = (not self.enabled and CS.cruiseState.enabled)
 
     # Some override values for Honda
     # brake discount removes a sharp nonlinearity

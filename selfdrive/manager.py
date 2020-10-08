@@ -222,14 +222,11 @@ persistent_processes = [
 
 if not PC:
   persistent_processes += [
+    'updated',
     'logcatd',
     'tombstoned',
-  ]
-
-if ANDROID:
-  persistent_processes += [
-    'updated',
     'shutdownd',    
+    'sensord',
   ]
 
 car_started_processes = [
@@ -260,7 +257,6 @@ if WEBCAM:
 if not PC:
   car_started_processes += [
     'ubloxd',
-    'sensord',
     'dmonitoringd',
     'dmonitoringmodeld',
   ]
@@ -588,6 +584,7 @@ def main():
     ("MdpsHarnessEnabled", "0"),
     ("SccEnabled", "1"),
     ("EnableOPwithCC", "1"),
+    ("SccHarnessPresent", "0"),
     ("IsDriverViewEnabled", "0"),
   ]
 

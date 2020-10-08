@@ -257,7 +257,6 @@ void update_sockets(UIState *s) {
     scene.rightblindspot = data.getRightBlindspot();
   } 
 
-#ifdef QCOM2 // TODO: use this for QCOM too
   if (sm.updated("sensorEvents")) {
     for (auto sensor : sm["sensorEvents"].getSensorEvents()) {
       if (sensor.which() == cereal::SensorEventData::LIGHT) {
@@ -265,7 +264,6 @@ void update_sockets(UIState *s) {
       }
     }
   }
-#endif
 
   s->started = scene.thermal.getStarted() || scene.frontview;
 }
