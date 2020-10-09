@@ -7,7 +7,6 @@ from selfdrive.config import Conversions as CV
 
 GearShifter = car.CarState.GearShifter
 
-
 class CarState(CarStateBase):
   def __init__(self, CP):
     super().__init__(CP)
@@ -26,6 +25,12 @@ class CarState(CarStateBase):
     self.mdps_error_cnt = 0
     self.spas_enabled = CP.spasEnabled
 
+    # blinker
+    self.left_blinker_flash = 0
+    self.right_blinker_flash = 0
+    self.TSigLHSw = 0
+    self.TSigRHSw = 0
+    
   def update(self, cp, cp2, cp_cam):
     cp_mdps = cp2 if self.mdps_bus else cp
     cp_sas = cp2 if self.sas_bus else cp
@@ -33,8 +38,8 @@ class CarState(CarStateBase):
 
     self.prev_cruise_buttons = self.cruise_buttons
     self.prev_cruise_main_button = self.cruise_main_button
-    self.prev_left_blinker = self.leftBlinker
-    self.prev_right_blinker = self.rightBlinker
+#    self.prev_left_blinker = self.leftBlinker
+#    self.prev_right_blinker = self.rightBlinker
     self.prev_lkas_button_on = self.lkas_button_on
 
     ret = car.CarState.new_message()
@@ -56,8 +61,26 @@ class CarState(CarStateBase):
     ret.steeringAngle = cp_sas.vl["SAS11"]['SAS_Angle']
     ret.steeringRate = cp_sas.vl["SAS11"]['SAS_Speed']
     ret.yawRate = cp.vl["ESP12"]['YAW_RATE']
-    ret.leftBlinker = self.leftBlinker = cp.vl["CGW1"]['CF_Gway_TSigLHSw'] != 0
-    ret.rightBlinker = self.rightBlinker = cp.vl["CGW1"]['CF_Gway_TSigRHSw'] != 0
+    
+    # blinker
+    self.TSigLHSw = cp.vl["CGW1"]['CF_Gway_TSigLHSw']
+    self.TSigRHSw = cp.vl["CGW1"]['CF_Gway_TSigRHSw']
+    self.leftBlinker = cp.vl["CGW1"]['CF_Gway_TurnSigLh'] != 0
+    self.rightBlinker = cp.vl["CGW1"]['CF_Gway_TurnSigRh'] != 0
+    
+    if self.leftBlinker:
+      self.left_blinker_flash = 150
+    elif self.left_blinker_flash:
+      self.left_blinker_flash -= 1
+
+    if self.rightBlinker:
+      self.right_blinker_flash = 150
+    elif self.right_blinker_flash:
+      self.right_blinker_flash -= 1
+
+    ret.leftBlinker = self.left_blinker_flash != 0
+    ret.rightBlinker = self.right_blinker_flash != 0
+        
     ret.steeringTorque = cp_mdps.vl["MDPS12"]['CR_Mdps_StrColTq']
     ret.steeringTorqueEps = cp_mdps.vl["MDPS12"]['CR_Mdps_OutTq']
     ret.steeringPressed = abs(ret.steeringTorque) > STEER_THRESHOLD
@@ -171,8 +194,8 @@ class CarState(CarStateBase):
     self.lkas_error = cp_cam.vl["LKAS11"]["CF_Lkas_LdwsSysState"] == 7
     if not self.lkas_error:
       self.lkas_button_on = cp_cam.vl["LKAS11"]["CF_Lkas_LdwsSysState"]
-    self.left_blinker_flash = cp.vl["CGW1"]['CF_Gway_TurnSigLh']
-    self.right_blinker_flash = cp.vl["CGW1"]['CF_Gway_TurnSigRh']
+#    self.left_blinker_flash = cp.vl["CGW1"]['CF_Gway_TurnSigLh']
+#    self.right_blinker_flash = cp.vl["CGW1"]['CF_Gway_TurnSigRh']
     if self.has_scc13:
       self.scc13 = cp_scc.vl["SCC13"]
     if self.has_scc14:
@@ -459,7 +482,6 @@ class CarState(CarStateBase):
         ("Navi_SCC_Camera_Act", "SCC11", 0),
         ("Navi_SCC_Camera_Status", "SCC11", 2),
 
-
         ("ACCMode", "SCC12", 0),
         ("CF_VSM_Prefill", "SCC12", 0),
         ("CF_VSM_DecCmdAct", "SCC12", 0),
@@ -581,4 +603,4 @@ class CarState(CarStateBase):
       ]
 
     return CANParser(DBC[CP.carFingerprint]['pt'], signals, checks, 2)
-
+  
