@@ -106,6 +106,9 @@ struct CarEvent @0x9b1657f34caf3ad3 {
     turningIndicatorOn @91;
     lkasButtonOff @92;
     autoLaneChange @93;
+    fanMalfunction @94;
+    visiononlyWarning @ 95;
+    belowSteerSpeedDing @ 96;
 
     dataNeededDEPRECATED @16;
     modelCommIssueDEPRECATED @27;
