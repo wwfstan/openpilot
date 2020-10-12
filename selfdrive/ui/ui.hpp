@@ -31,9 +31,19 @@
 #define COLOR_BLACK_ALPHA(x) nvgRGBA(0, 0, 0, x)
 #define COLOR_WHITE nvgRGBA(255, 255, 255, 255)
 #define COLOR_WHITE_ALPHA(x) nvgRGBA(255, 255, 255, x)
-#define COLOR_YELLOW nvgRGBA(218, 202, 37, 255)
-#define COLOR_RED nvgRGBA(201, 34, 49, 255)
 #define COLOR_OCHRE nvgRGBA(218, 111, 37, 255)
+#define COLOR_OCHRE_ALPHA(x) nvgRGBA(218, 111, 37, x)
+#define COLOR_GREEN nvgRGBA(0, 255, 0, 255)
+#define COLOR_GREEN_ALPHA(x) nvgRGBA(0, 255, 0, x)
+#define COLOR_ORANGE nvgRGBA(255, 165, 0, 255)
+#define COLOR_ORANGE_ALPHA(x) nvgRGBA(255, 165, 0, x)
+#define COLOR_RED nvgRGBA(255, 0, 0, 255)
+#define COLOR_RED_ALPHA(x) nvgRGBA(255, 0, 0, x)
+#define COLOR_YELLOW nvgRGBA(255, 255, 0, 255)
+#define COLOR_YELLOW_ALPHA(x) nvgRGBA(255, 255, 0, x)
+#define COLOR_ENGAGED nvgRGBA(23, 134, 68, 255)
+#define COLOR_ENGAGEABLE nvgRGBA(23, 51, 73, 255)
+#define COLOR_OPLONG nvgRGBA(105, 105, 105, 105)
 
 #define UI_BUF_COUNT 4
 
@@ -48,9 +58,12 @@ typedef struct Rect {
 } Rect;
 
 const int sbr_w = 300;
-const int bdr_s = 30;
+const int bdr_is = 30;
+const int bdr_s = 10;
+const int vwp_h = 1080;
 const int header_h = 420;
 const int footer_h = 280;
+const int footer_y = vwp_h-bdr_s-footer_h;
 const Rect settings_btn = {50, 35, 200, 117};
 const Rect home_btn = {60, 1080 - 180 - 40, 180, 180};
 
@@ -62,10 +75,6 @@ const int TRACK_POINTS_MAX_CNT = 50 * 2;
 
 const int SET_SPEED_NA = 255;
 
-typedef struct Color {
-  uint8_t r, g, b;
-} Color;
-
 typedef enum NetStatus {
   NET_CONNECTED,
   NET_DISCONNECTED,
@@ -76,16 +85,18 @@ typedef enum UIStatus {
   STATUS_OFFROAD,
   STATUS_DISENGAGED,
   STATUS_ENGAGED,
+  STATUS_ENGAGED_OPLONG,
   STATUS_WARNING,
   STATUS_ALERT,
 } UIStatus;
 
-static std::map<UIStatus, Color> bg_colors = {
-  {STATUS_OFFROAD, {0x07, 0x23, 0x39}},
-  {STATUS_DISENGAGED, {0x17, 0x33, 0x49}},
-  {STATUS_ENGAGED, {0x17, 0x86, 0x44}},
-  {STATUS_WARNING, {0xDA, 0x6F, 0x25}},
-  {STATUS_ALERT, {0xC9, 0x22, 0x31}},
+static std::map<UIStatus, NVGcolor> bg_colors = {
+  {STATUS_OFFROAD, nvgRGBA(0x07, 0x23, 0x39, 0xf1)},
+  {STATUS_DISENGAGED, nvgRGBA(0x17, 0x33, 0x49, 0xc8)},
+  {STATUS_ENGAGED, nvgRGBA(0x17, 0x86, 0x44, 0x0f)},
+  {STATUS_WARNING, nvgRGBA(0xDA, 0x6F, 0x25, 0x0f)},
+  {STATUS_ALERT, nvgRGBA(0xC9, 0x22, 0x31, 0xf1)},
+  {STATUS_ENGAGED_OPLONG, nvgRGBA(0x69, 0x69, 0x69, 0x0f)},
 };
 
 typedef struct UIScene {
@@ -103,10 +114,32 @@ typedef struct UIScene {
   Rect viz_rect;
   int ui_viz_ro;
 
+  int lead_status;
+  float lead_d_rel, lead_y_rel, lead_v_rel;
+
+  int lead_status2;
+  float lead_d_rel2, lead_y_rel2, lead_v_rel2;
+
   std::string alert_text1;
   std::string alert_text2;
   std::string alert_type;
   cereal::ControlsState::AlertSize alert_size;
+  
+  // ui add
+  bool rightblindspot;
+  bool leftblindspot;
+  bool leftBlinker;
+  bool rightBlinker;
+  int blinker_blinkingrate;
+  float angleSteers;
+  float steerRatio;
+  bool brakeLights;
+  float angleSteersDes;
+  bool steerOverride;
+  float output_scale; 
+  int batteryPercent;
+  bool batteryCharging;
+  char batteryStatus[64];
 
   cereal::HealthData::HwType hwType;
   int satelliteCount;
@@ -153,6 +186,7 @@ typedef struct UIState {
   int img_wheel;
   int img_turn;
   int img_face;
+  int img_brake;
   int img_button_settings;
   int img_button_home;
   int img_battery;
@@ -195,6 +229,8 @@ typedef struct UIState {
 
   bool alert_blinked;
   float alert_blinking_alpha;
+  
+  bool livempc_or_radarstate_changed;
 
   track_vertices_data track_vertices[2];
   model_path_vertices_data model_path_vertices[MODEL_LANE_PATH_CNT * 2];
