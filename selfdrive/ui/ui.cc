@@ -24,7 +24,7 @@ int write_param_float(float param, const char* param_name, bool persistent_param
 
 void ui_init(UIState *s) {
   s->sm = new SubMaster({"model", "controlsState", "uiLayoutState", "liveCalibration", "radarState", "thermal",
-                         "health", "carParams", "ubloxGnss", "driverState", "dMonitoringState", "sensorEvents"});
+                         "health", "carParams", "ubloxGnss", "driverState", "dMonitoringState", "sensorEvents", "carState", "liveMpc", "liveParameters"});
 
   s->started = false;
   s->status = STATUS_OFFROAD;
@@ -125,6 +125,11 @@ void update_sockets(UIState *s) {
     auto event = sm["controlsState"];
     scene.controls_state = event.getControlsState();
 
+    s->scene.angleSteers = scene.controls_state.getAngleSteers();
+    s->scene.steerOverride= scene.controls_state.getSteerOverride();
+    s->scene.output_scale = scene.controls_state.getLateralControlState().getPidState().getOutput();
+    s->scene.angleSteersDes = scene.controls_state.getAngleSteersDes();
+
     // TODO: the alert stuff shouldn't be handled here
     auto alert_sound = scene.controls_state.getAlertSound();
     if (scene.alert_type.compare(scene.controls_state.getAlertType()) != 0) {
@@ -143,8 +148,11 @@ void update_sockets(UIState *s) {
       s->status = STATUS_WARNING;
     } else if (alertStatus == cereal::ControlsState::AlertStatus::CRITICAL) {
       s->status = STATUS_ALERT;
-    } else{
-      s->status = scene.controls_state.getEnabled() ? STATUS_ENGAGED : STATUS_DISENGAGED;
+    } else if (scene.controls_state.getEnabled()){
+      s->status = (s->longitudinal_control)? STATUS_ENGAGED_OPLONG:STATUS_ENGAGED;
+    }
+    else {
+      s->status = STATUS_DISENGAGED;
     }
 
     float alert_blinkingrate = scene.controls_state.getAlertBlinkingRate();
@@ -165,10 +173,21 @@ void update_sockets(UIState *s) {
       }
     }
   }
+
+  if (sm.updated("liveParameters")) {
+    //scene.liveParams = sm["liveParameters"].getLiveParameters();
+    auto data = sm["liveParameters"].getLiveParameters();    
+    s->scene.steerRatio=data.getSteerRatio();
+  }
+  
   if (sm.updated("radarState")) {
     auto data = sm["radarState"].getRadarState();
     scene.lead_data[0] = data.getLeadOne();
     scene.lead_data[1] = data.getLeadTwo();
+    
+    s->scene.lead_v_rel = scene.lead_data[0].getVRel();
+    s->scene.lead_d_rel = scene.lead_data[0].getDRel();
+    s->scene.lead_status = scene.lead_data[0].getStatus();
   }
   if (sm.updated("liveCalibration")) {
     scene.world_objects_visible = true;
@@ -183,6 +202,16 @@ void update_sockets(UIState *s) {
     fill_path_points(scene.model.getLeftLane(), scene.left_lane_points);
     fill_path_points(scene.model.getRightLane(), scene.right_lane_points);
   }
+  if (sm.updated("liveMpc")) {
+    auto data = sm["liveMpc"].getLiveMpc();
+    auto x_list = data.getX();
+    auto y_list = data.getY();
+    for (int i = 0; i < 50; i++){
+      scene.mpc_x[i] = x_list[i];
+      scene.mpc_y[i] = y_list[i];
+    }
+    s->livempc_or_radarstate_changed = true;
+  }  
   if (sm.updated("uiLayoutState")) {
     auto data = sm["uiLayoutState"].getUiLayoutState();
     s->active_app = data.getActiveApp();
@@ -217,8 +246,18 @@ void update_sockets(UIState *s) {
   } else if ((sm.frame - sm.rcv_frame("dMonitoringState")) > UI_FREQ/2) {
     scene.frontview = false;
   }
+  if (sm.updated("carState")) {
+    auto data = sm["carState"].getCarState();
+    if(scene.leftBlinker!=data.getLeftBlinker() || scene.rightBlinker!=data.getRightBlinker()){
+      scene.blinker_blinkingrate = 50;
+    }
+    scene.brakeLights = data.getBrakeLights();
+    scene.leftBlinker = data.getLeftBlinker();
+    scene.rightBlinker = data.getRightBlinker();
+    scene.leftblindspot = data.getLeftBlindspot();
+    scene.rightblindspot = data.getRightBlindspot();
+  } 
 
-#ifdef QCOM2 // TODO: use this for QCOM too
   if (sm.updated("sensorEvents")) {
     for (auto sensor : sm["sensorEvents"].getSensorEvents()) {
       if (sensor.which() == cereal::SensorEventData::LIGHT) {
@@ -226,7 +265,6 @@ void update_sockets(UIState *s) {
       }
     }
   }
-#endif
 
   s->started = scene.thermal.getStarted() || scene.frontview;
 }
@@ -256,8 +294,8 @@ void ui_update(UIState *s) {
   if (s->started && !s->scene.frontview && ((s->sm)->frame - s->started_frame) > 5*UI_FREQ) {
     if ((s->sm)->rcv_frame("controlsState") < s->started_frame) {
       // car is started, but controlsState hasn't been seen at all
-      s->scene.alert_text1 = "openpilot Unavailable";
-      s->scene.alert_text2 = "Waiting for controls to start";
+      s->scene.alert_text1 = "오픈파일럿을 사용할수없습니다";
+      s->scene.alert_text2 = "컨트롤 시작을 기다리는중...";
       s->scene.alert_size = cereal::ControlsState::AlertSize::MID;
     } else if (((s->sm)->frame - (s->sm)->rcv_frame("controlsState")) > 5*UI_FREQ) {
       // car is started, but controls is lagging or died
@@ -266,8 +304,8 @@ void ui_update(UIState *s) {
         LOGE("Controls unresponsive");
       }
 
-      s->scene.alert_text1 = "TAKE CONTROL IMMEDIATELY";
-      s->scene.alert_text2 = "Controls Unresponsive";
+      s->scene.alert_text1 = "즉시 핸들을 잡아주세요";
+      s->scene.alert_text2 = "컨트롤이 응답하지않습니다";
       s->scene.alert_size = cereal::ControlsState::AlertSize::FULL;
       s->status = STATUS_ALERT;
     }
