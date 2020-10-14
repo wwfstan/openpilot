@@ -36,7 +36,7 @@ def create_lkas11(packer, frame, car_fingerprint, apply_steer, steer_req,
     # This field is actually LdwsActivemode
     # Genesis and Optima fault when forwarding while engaged    
    
-  if car_fingerprint in [CAR.SONATA, CAR.PALISADE, CAR.SONATA_HEV, CAR.SANTA_FE, CAR.KONA_EV, CAR.NIRO_EV]:
+  if car_fingerprint in [CAR.SONATA, CAR.PALISADE, CAR.SONATA_HEV, CAR.SANTA_FE, CAR.KONA_EV, CAR.KONA_HEV, CAR.IONIQ_EV, CAR.NIRO_EV]:
     values["CF_Lkas_LdwsActivemode"] = int(left_lane) + (int(right_lane) << 1)
     values["CF_Lkas_LdwsOpt_USM"] = 2
     values["CF_Lkas_FcwOpt_USM"] = 2 if enabled else 1
