@@ -377,9 +377,9 @@ FEATURES = {
   # Use TCU Message for Gear Selection
   "use_tcu_gears": set([CAR.OPTIMA, CAR.SONATA19, CAR.VELOSTER]),
   # Use E_GEAR Message for Gear Selection
-  "use_elect_gears": set([CAR.OPTIMA_HEV, CAR.IONIQ_EV, CAR.KONA_EV, CAR.SONATA_HEV, CAR.NIRO_EV, CAR.CARDENZA_HEV, CAR.GRANDEUR_HEV]),
+  "use_elect_gears": set([CAR.OPTIMA_HEV, CAR.IONIQ_EV, CAR.KONA_EV, CAR.KONA_HEV, CAR.SONATA_HEV, CAR.NIRO_EV, CAR.CARDENZA_HEV, CAR.GRANDEUR_HEV]),
   # Use E_EMS11 Message for Gas and Brake for Hybrid/ELectric
-  "use_elect_ems": set([CAR.OPTIMA_HEV, CAR.IONIQ_EV, CAR.KONA_EV, CAR.SONATA_HEV, CAR.NIRO_EV, CAR.CARDENZA_HEV, CAR.GRANDEUR_HEV]),
+  "use_elect_ems": set([CAR.OPTIMA_HEV, CAR.IONIQ_EV, CAR.KONA_EV, CAR.KONA_HEV, CAR.SONATA_HEV, CAR.NIRO_EV, CAR.CARDENZA_HEV, CAR.GRANDEUR_HEV]),
   # send LFA MFA message for new HKG models
   "send_lfa_mfa": set([CAR.SONATA, CAR.PALISADE, CAR.SONATA_HEV, CAR.SANTA_FE, CAR.NIRO_EV]),
   "has_scc13": set([]), 
